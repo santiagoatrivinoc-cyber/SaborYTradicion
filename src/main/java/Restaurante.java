@@ -56,4 +56,24 @@ public class Restaurante {
                 ", direccion='" + direccion + '\'' +
                 '}';
     }
+
+    public boolean verificarProducto(String codigo) {
+        for (Producto producto : menu) {
+            if (producto.getCodigo().equals(codigo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean registrarProducto(Producto producto) {
+        if (verificarProducto(producto.getCodigo())) {
+            return false;
+        }
+        menu.add(producto);
+        return true;
+    }
+
+
+
+
 }
