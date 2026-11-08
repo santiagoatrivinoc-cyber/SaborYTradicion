@@ -6,6 +6,7 @@ public class Restaurante {
     private String nit;
     private String direccion;
     private List<Producto> menu;
+    private List<Cliente> listaClientes;
 
     public Restaurante(String nombre, String nit, String direccion) {
         this.nombre = nombre;
@@ -14,6 +15,7 @@ public class Restaurante {
 
         //inicializar listas
         menu = new ArrayList<>();
+        listaClientes = new ArrayList<>();
     }
 
     public String getNombre() {
@@ -48,6 +50,14 @@ public class Restaurante {
         this.menu = menu;
     }
 
+    public List<Cliente> getListaClientes() {
+        return listaClientes;
+    }
+
+    public void setListaClientes(List<Cliente> listaClientes) {
+        this.listaClientes = listaClientes;
+    }
+
     @Override
     public String toString() {
         return "Restaurante{" +
@@ -72,6 +82,25 @@ public class Restaurante {
         menu.add(producto);
         return true;
     }
+
+    public boolean verificarCliente(String documento) {
+        for (Cliente cliente : listaClientes) {
+            if (cliente.getDocumento().equals(documento)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean registrarCliente(Cliente cliente) {
+        if (verificarCliente(cliente.getDocumento())) {
+            return false;
+        }
+        listaClientes.add(cliente);
+        return true;
+    }
+
+
 
 
 

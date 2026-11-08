@@ -145,10 +145,38 @@ public class Aplicacion {
                     }
                     break;
 
-                case 2:
+                case 2: {
                     //Registrar clientes, verificando que no existan documentos de identidad repetidos.
 
+                    System.out.println("-----Registrar cliente-----");
+
+                    System.out.println("Ingresa el nombre del cliente: ");
+                    String nombreCliente = sc.nextLine();
+
+                    System.out.println("Ingresa el documento del cliente: ");
+                    String documentoCliente = sc.nextLine();
+
+                    System.out.println("Ingresa el teléfono del cliente: ");
+                    String telefonoCliente = sc.nextLine();
+
+                    System.out.println("Ingresa el correo del cliente: ");
+                    String correoCliente = sc.nextLine();
+
+                    System.out.println("Ingresa la dirección de residencia del cliente: ");
+                    String direccionCliente = sc.nextLine();
+
+
+                    Cliente cliente = new Cliente(nombreCliente, documentoCliente, telefonoCliente, correoCliente, direccionCliente);
+
+                    if (restaurante.registrarCliente(cliente)) {
+                        System.out.println("Cliente registrado correctamente.");
+                    } else {
+                        System.out.println("Error: ya existe un cliente con ese documento.");
+                    }
+
+
                     break;
+            }
                 case 3:
                     //Calcular el precio de venta de los productos, aplicando los incrementos y recargos
                     // correspondientes según sus características.
