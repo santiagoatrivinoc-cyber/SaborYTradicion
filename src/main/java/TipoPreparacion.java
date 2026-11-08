@@ -2,5 +2,5 @@ public enum TipoPreparacion {
     ASADO,
     FRITO,
     HORNEADO,
-    A_LA_PLANCHA
+    A_LA_PLANCHA;
 }

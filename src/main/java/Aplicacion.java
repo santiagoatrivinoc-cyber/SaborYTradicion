@@ -2,10 +2,13 @@ import java.util.Scanner;
 
 public class Aplicacion {
     public static void main(String[] args){
+
+        Restaurante SaborYTradicion = new Restaurante("Sabor & Tradicion", "900123456-7", "Carrera 14 # 20-35, Armenia, Quindío");
         Scanner sc = new Scanner(System.in);
         int opcion;
         do{
-            System.out.println("\n====== MENU Sabor & Tradición ======");
+            System.out.println("\n======        MENU        ======");
+            System.out.println("====== Sabor & Tradición ======");
 
 
             System.out.println("\n--- Escoja una de las siguientes opciones:  ---");
@@ -34,6 +37,7 @@ public class Aplicacion {
                 case 1:
                     //Registrar productos en el menú del restaurante, incluyendo platos fuertes,
                     // bebidas y postres, evitando códigos duplicados.
+
 
                     break;
                 case 2:
