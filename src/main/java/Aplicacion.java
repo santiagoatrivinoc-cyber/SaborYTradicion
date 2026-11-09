@@ -6,6 +6,8 @@ public class Aplicacion {
     public static void main(String[] args){
 
         Restaurante restaurante = new Restaurante("Sabor & Tradicion", "900123456-7", "Carrera 14 # 20-35, Armenia, Quindío");
+        EntregaSegura entregaSegura = new EntregaSegura();
+        RapidoExpress rapidoExpress = new RapidoExpress();
         Scanner sc = new Scanner(System.in);
         int opcion;
         do {
@@ -276,7 +278,9 @@ public class Aplicacion {
                             }
                         }
                     }
-                    Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, EstadoEntrega.PENDIENTE, cliente, null);
+
+                    Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, EstadoEntrega.PENDIENTE, cliente, rapidoExpress);
+
 
 
 
