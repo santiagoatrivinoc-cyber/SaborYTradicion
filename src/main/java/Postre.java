@@ -3,8 +3,8 @@ public class Postre extends Producto{
     private double temperaturaAlmacenamiento;
     private boolean requiereRefrigeracion;
 
-    public Postre(String codigo, String nombre, String descripcion, double precioBase, int tiempoPreparacion, double peso, double temperaturaAlmacenamiento, boolean requiereRefrigeracion) {
-        super(codigo, nombre, descripcion, precioBase, tiempoPreparacion);
+    public Postre(String codigo, String nombre, String descripcion, double precioBase, int tiempoPreparacion, Restaurante restaurante, double peso, double temperaturaAlmacenamiento, boolean requiereRefrigeracion) {
+        super(codigo, nombre, descripcion, precioBase, tiempoPreparacion, restaurante);
         this.peso = peso;
         this.temperaturaAlmacenamiento = temperaturaAlmacenamiento;
         this.requiereRefrigeracion = requiereRefrigeracion;
@@ -50,5 +50,10 @@ public class Postre extends Producto{
             precio += getPrecioBase() * 0.05;
         }
         return precio;
+    }
+
+    @Override
+    public boolean validarCondicionesCalidad() {
+        return false;
     }
 }

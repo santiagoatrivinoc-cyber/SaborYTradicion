@@ -2,14 +2,14 @@ public class Bebida extends Producto{
     private int volumen;
     private double temperaturaServicio;
     private TipoTemperatura tipoTemperatura;
-    private boolean preparaciónEspecial;
+    private boolean preparacionEspecial;
 
-    public Bebida(String codigo, String nombre, String descripcion, double precioBase, int tiempoPreparacion, Restaurante restaurante, int volumen, double temperaturaServicio, TipoTemperatura tipoTemperatura, boolean preparaciónEspecial) {
+    public Bebida(String codigo, String nombre, String descripcion, double precioBase, int tiempoPreparacion, Restaurante restaurante, int volumen, double temperaturaServicio, TipoTemperatura tipoTemperatura, boolean preparacionEspecial) {
         super(codigo, nombre, descripcion, precioBase, tiempoPreparacion, restaurante);
         this.volumen = volumen;
         this.temperaturaServicio = temperaturaServicio;
         this.tipoTemperatura = tipoTemperatura;
-        this.preparaciónEspecial = preparaciónEspecial;
+        this.preparacionEspecial = preparacionEspecial;
     }
 
     public int getVolumen() {
@@ -36,12 +36,12 @@ public class Bebida extends Producto{
         this.tipoTemperatura = tipoTemperatura;
     }
 
-    public boolean isPreparaciónEspecial() {
-        return preparaciónEspecial;
+    public boolean isPreparacionEspecial() {
+        return preparacionEspecial;
     }
 
-    public void setPreparaciónEspecial(boolean preparaciónEspecial) {
-        this.preparaciónEspecial = preparaciónEspecial;
+    public void setPreparacionEspecial(boolean preparaciónEspecial) {
+        this.preparacionEspecial = preparaciónEspecial;
     }
 
     @Override
@@ -50,14 +50,14 @@ public class Bebida extends Producto{
                 "volumen=" + volumen +
                 ", temperaturaServicio=" + temperaturaServicio +
                 ", tipoTemperatura=" + tipoTemperatura +
-                ", preparaciónEspecial=" + preparaciónEspecial +
+                ", preparaciónEspecial=" + preparacionEspecial +
                 '}';
     }
 
     @Override
     public double calcularPrecioVenta() {
         double precio = getPrecioBase() * 1.10;
-        if (preparaciónEspecial) {
+        if (preparacionEspecial) {
             precio += 3000;
         }
         return precio;

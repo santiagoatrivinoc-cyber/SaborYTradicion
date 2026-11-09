@@ -77,15 +77,12 @@ public abstract class Producto {
 
     @Override
     public String toString() {
-        return "Producto{" +
-                "codigo='" + codigo + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", precioBase=" + precioBase +
-                ", tiempoPreparacion=" + tiempoPreparacion +
-                ", restaurante=" + restaurante +
-                ", listaDetallesPedido=" + listaDetallesPedido +
-                '}';
+        return "---- " + nombre + " ----" +
+                "\ncodigo: " + codigo +
+                "\ndescripcion:'" + descripcion +
+                "\nprecioBase:" + precioBase +
+                "\ntiempoPreparacion:" + tiempoPreparacion +
+                "\nlistaDetallesPedido=" + listaDetallesPedido;
     }
 
     public abstract double calcularPrecioVenta();

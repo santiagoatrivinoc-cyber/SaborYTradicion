@@ -100,12 +100,23 @@ public class Restaurante {
         return true;
     }
 
+    public Cliente buscarCliente(String documento){
+        for(Cliente cliente : listaClientes){
+            if(cliente.getDocumento().equals(documento)){
+                return cliente;
+            }
+        }
+        System.out.println("Cliente no encontrado (se recomienda registrar el cliente)");
+        return null;
+    }
+
     public Producto buscarProducto(String codigo) {
         for (Producto producto : menu) {
             if (producto.getCodigo().equals(codigo)) {
                 return producto;
             }
         }
+        System.out.println("No se encontro el producto");
         return null;
     }
 

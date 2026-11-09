@@ -14,12 +14,11 @@ public class Pedido {
     private ServicioDomicilio empresaTransporte;
     private List<DetallePedido> listaDetallesPedidos;
 
-    public Pedido(String codigo, LocalDateTime fecha, ModalidadEntrega modalidadEntrega, EstadoEntrega estadoEntrega, double costoDomicilio, Cliente cliente, ServicioDomicilio empresaTransporte) {
+    public Pedido(String codigo, LocalDateTime fecha, ModalidadEntrega modalidadEntrega, EstadoEntrega estadoEntrega, Cliente cliente, ServicioDomicilio empresaTransporte) {
         this.codigo = codigo;
         this.fecha = fecha;
         this.modalidadEntrega = modalidadEntrega;
         this.estadoEntrega = estadoEntrega;
-        this.costoDomicilio = costoDomicilio;
         this.cliente = cliente;
         listaDetallesPedidos = new ArrayList<>();
     }
