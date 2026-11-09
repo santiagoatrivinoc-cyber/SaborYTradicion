@@ -74,7 +74,41 @@ public class Cliente {
         this.listaPedidos = listaPedidos;
     }
 
+    public boolean verificarPedido(String codigo){
+        boolean existePedido = false;
+        for(Pedido pedido : listaPedidos){
+            if (pedido.getCodigo().equals(codigo)) {
+                existePedido = true;
+                break;
+            }
+        }
+        return existePedido;
+    }
 
+    public void registrarPedido(Pedido pedido){
+        boolean existePedido = verificarPedido(pedido.getCodigo());
+        if (existePedido){
+            System.out.println("Este pedido ya se registro anterirmente, no se puede volver a registrar.");
+            return;
+        }
+        listaPedidos.add(pedido);
+    }
+
+    public Pedido buscarPedido(String codigo){
+        for(Pedido pedido : listaPedidos){
+            if(pedido.getCodigo().equals(codigo)){
+                return pedido;
+            }
+        }
+        System.out.println("Pedido no encontrado");
+        return null;
+    }
+
+    public void mostrarHistorialPedidos(){
+        for(Pedido pedido : listaPedidos){
+            System.out.println(pedido.toString() + "\n--------------------\n");
+        }
+    }
 
     @Override
     public String toString() {
