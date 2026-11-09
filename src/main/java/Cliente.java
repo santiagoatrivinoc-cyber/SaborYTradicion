@@ -74,6 +74,8 @@ public class Cliente {
         this.listaPedidos = listaPedidos;
     }
 
+
+
     @Override
     public String toString() {
         return "Cliente{" +

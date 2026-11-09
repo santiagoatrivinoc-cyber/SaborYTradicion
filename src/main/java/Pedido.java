@@ -1,20 +1,29 @@
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pedido {
 
     private String codigo;
-    private LocalDate fecha;
+    private LocalDateTime fecha;
     private ModalidadEntrega modalidadEntrega;
     private EstadoEntrega estadoEntrega;
     private double costoDomicilio;
+    private Cliente cliente;
+    private ServicioDomicilio empresaTransporte;
+    private List<DetallePedido> listaDetallesPedidos;
 
-    public Pedido(String codigo, LocalDate fecha, ModalidadEntrega modalidadEntrega, EstadoEntrega estadoEntrega, double costoDomicilio) {
+    public Pedido(String codigo, LocalDateTime fecha, ModalidadEntrega modalidadEntrega, EstadoEntrega estadoEntrega, double costoDomicilio, Cliente cliente, ServicioDomicilio empresaTransporte) {
         this.codigo = codigo;
         this.fecha = fecha;
         this.modalidadEntrega = modalidadEntrega;
         this.estadoEntrega = estadoEntrega;
         this.costoDomicilio = costoDomicilio;
+        this.cliente = cliente;
+        listaDetallesPedidos = new ArrayList<>();
     }
+
 
     public String getCodigo() {
         return codigo;
@@ -23,10 +32,10 @@ public class Pedido {
         this.codigo = codigo;
     }
 
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 
@@ -49,6 +58,56 @@ public class Pedido {
     }
     public void setCostoDomicilio(double costoDomicilio) {
         this.costoDomicilio = costoDomicilio;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public ServicioDomicilio getEmpresaTransporte() {
+        return empresaTransporte;
+    }
+
+    public void setEmpresaTransporte(ServicioDomicilio empresaTransporte) {
+        this.empresaTransporte = empresaTransporte;
+    }
+
+    public List<DetallePedido> getListaDetallesPedidos() {
+        return listaDetallesPedidos;
+    }
+
+    public void setListaDetallesPedidos(List<DetallePedido> listaDetallesPedidos) {
+        this.listaDetallesPedidos = listaDetallesPedidos;
+    }
+
+    public void agregarProducto(Producto producto, int cantidad){
+        for(DetallePedido detalle : listaDetallesPedidos) {
+            if(detalle.getProducto().getCodigo().equals(producto.getCodigo())){
+                detalle.setCantidad(detalle.getCantidad()+cantidad);
+                return;
+            }
+
+        }
+        this.listaDetallesPedidos.add(new DetallePedido(producto,cantidad));
+    }
+
+    public double calcularValorProductos(){
+        return 0;
+    }
+
+    public double calcularValorTotal(){
+        return 0;
+    }
+
+    public void marcarEntrega(){
+
+    }
+
+    public void marcarCancelacion(){
+
     }
 
     @Override
