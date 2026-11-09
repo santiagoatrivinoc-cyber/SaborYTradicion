@@ -196,6 +196,7 @@ public class Aplicacion {
                     break;
                 }
                 case 4:
+                    System.out.println("--- Verificar Condiciones de Calidad de Productos ---");
                     //Verificar las condiciones de calidad de los productos, determinando cuáles cumplen
                     // los requisitos establecidos y cuáles son rechazados.
 
