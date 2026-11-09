@@ -174,7 +174,6 @@ public class Aplicacion {
                         System.out.println("Error: ya existe un cliente con ese documento.");
                     }
 
-
                     break;
             }
                 case 3:

@@ -53,4 +53,13 @@ public class Bebida extends Producto{
                 ", preparaciónEspecial=" + preparaciónEspecial +
                 '}';
     }
+
+    @Override
+    public double calcularPrecioVenta() {
+        double precio = getPrecioBase() * 1.10;
+        if (preparaciónEspecial) {
+            precio += 3000;
+        }
+        return precio;
+    }
 }

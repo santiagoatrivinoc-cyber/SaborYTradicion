@@ -42,4 +42,9 @@ public class PlatoFuerte extends Producto{
                 ", coccionAprobada=" + coccionAprobada +
                 '}';
     }
+//incremento 20%
+    @Override
+    public double calcularPrecioVenta() {
+        return getPrecioBase() * 1.20;
+    }
 }

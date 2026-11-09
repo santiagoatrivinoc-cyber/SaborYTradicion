@@ -42,4 +42,13 @@ public class Postre extends Producto{
                 ", requiereRefrigeracion=" + requiereRefrigeracion +
                 '}';
     }
+
+    @Override
+    public double calcularPrecioVenta() {
+        double precio = getPrecioBase() * 1.15;
+        if (requiereRefrigeracion) {
+            precio += getPrecioBase() * 0.05;
+        }
+        return precio;
+    }
 }

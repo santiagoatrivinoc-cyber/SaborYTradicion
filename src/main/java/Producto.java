@@ -66,4 +66,6 @@ public abstract class Producto {
                 ", tiempoPreparacion=" + tiempoPreparacion +
                 '}';
     }
+
+    public abstract double calcularPrecioVenta();
 }
