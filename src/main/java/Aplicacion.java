@@ -176,11 +176,25 @@ public class Aplicacion {
 
                     break;
             }
-                case 3:
+                case 3:{
                     //Calcular el precio de venta de los productos, aplicando los incrementos y recargos
                     // correspondientes según sus características.
 
+
+                    System.out.println("-----Calcular precio de venta-----");
+                    System.out.println("Ingresa el código del producto: ");
+                    String codigoBuscado = sc.nextLine();
+
+                    Producto encontrado = restaurante.buscarProducto(codigoBuscado);
+
+                    if (encontrado != null) {
+                        System.out.println("Precio base: $" + String.format("%.0f", encontrado.getPrecioBase()));
+                        System.out.println("Precio de venta: $" + String.format("%.0f", encontrado.calcularPrecioVenta()));
+                    } else {
+                        System.out.println("No existe un producto con ese código.");
+                    }
                     break;
+                }
                 case 4:
                     //Verificar las condiciones de calidad de los productos, determinando cuáles cumplen
                     // los requisitos establecidos y cuáles son rechazados.

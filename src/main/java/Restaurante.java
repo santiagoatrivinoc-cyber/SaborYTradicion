@@ -100,6 +100,15 @@ public class Restaurante {
         return true;
     }
 
+    public Producto buscarProducto(String codigo) {
+        for (Producto producto : menu) {
+            if (producto.getCodigo().equals(codigo)) {
+                return producto;
+            }
+        }
+        return null;
+    }
+
 
 
 
