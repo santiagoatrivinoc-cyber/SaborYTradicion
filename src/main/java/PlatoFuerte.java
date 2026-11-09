@@ -50,7 +50,9 @@ public class PlatoFuerte extends Producto{
 
     @Override
     public boolean validarCondicionesCalidad() {
-        return false;
+        boolean pesoValido = (peso >= 200 && peso <= 900);
+        boolean tiempoValido = (getTiempoPreparacion() >= 10 && getTiempoPreparacion() <= 60);
+        return pesoValido && tiempoValido && coccionAprobada;
     }
 }
 

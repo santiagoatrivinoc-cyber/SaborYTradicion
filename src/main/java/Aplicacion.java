@@ -199,10 +199,26 @@ public class Aplicacion {
                 }
                 case 4:
                     System.out.println("--- Verificar Condiciones de Calidad de Productos ---");
-                    //Verificar las condiciones de calidad de los productos, determinando cuáles cumplen
-                    // los requisitos establecidos y cuáles son rechazados.
 
+                    boolean hayIncumplidos = false;
+
+                    for (Producto producto : restaurante.getMenu()) {
+
+                        boolean cumple = producto.validarCondicionesCalidad();
+
+                        if (cumple) {
+                            System.out.println("[APROBADO] " + producto.getNombre() + " (" + producto.getCodigo() + ") cumple con las condiciones de calidad.");
+                        } else {
+                            System.out.println("[RECHAZADO] " + producto.getNombre() + " (" + producto.getCodigo() + ") NO cumple con las condiciones de calidad.");
+                            hayIncumplidos = true;
+                        }
+                    }
+
+                    if (!hayIncumplidos) {
+                        System.out.println("\n¡Excelente! Todos los productos del menú cumplen con las condiciones de calidad.");
+                    }
                     break;
+
                 case 5: {
                     //Consultar los productos disponibles en el menú, mostrando su información y precio de venta.
                     System.out.println("--- Consultar Productos Disponibles ---");

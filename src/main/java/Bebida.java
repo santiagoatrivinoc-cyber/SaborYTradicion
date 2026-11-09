@@ -65,6 +65,15 @@ public class Bebida extends Producto{
 
     @Override
     public boolean validarCondicionesCalidad() {
-        return false;
+        boolean volumenValido = (volumen >= 150 && volumen <= 1500);
+        boolean temperaturaValida = false;
+
+        if ( tipoTemperatura == TipoTemperatura.FRIA) {
+            temperaturaValida = (temperaturaServicio>= 0 && temperaturaServicio<= 10);
+        } else {
+            temperaturaValida = (temperaturaServicio >= 55 && temperaturaServicio <= 85);
+        }
+
+        return volumenValido && temperaturaValida;
     }
 }

@@ -54,6 +54,15 @@ public class Postre extends Producto{
 
     @Override
     public boolean validarCondicionesCalidad() {
-        return false;
+        boolean pesoValido = (peso >= 80 && peso <= 500);
+        boolean temperaturaValida = false;
+
+        if (requiereRefrigeracion) {
+            temperaturaValida = (temperaturaAlmacenamiento >= 0 && temperaturaAlmacenamiento <= 6);
+        } else {
+            temperaturaValida = (temperaturaAlmacenamiento >= 15 && temperaturaAlmacenamiento <= 30);
+        }
+
+        return pesoValido && temperaturaValida;
     }
 }
