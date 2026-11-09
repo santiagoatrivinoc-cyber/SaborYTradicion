@@ -203,7 +203,8 @@ public class Aplicacion {
                     break;
                 case 5:
                     //Consultar los productos disponibles en el menú, mostrando su información y precio de venta.
-
+                    System.out.println("--- Consultar Productos Disponibles ---");
+                    restaurante.consultarProductosDisponibles();
                     break;
                 case 6:
                     //Registrar pedidos de clientes, permitiendo seleccionar varios productos y sus

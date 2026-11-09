@@ -109,6 +109,16 @@ public class Restaurante {
         return null;
     }
 
+    public void consultarProductosDisponibles(){
+        System.out.println("---------- Menu Productos Disponibles ----------");
+        for(Producto producto: menu){
+            System.out.println(producto.toString());
+            System.out.println("\n\n");
+        }
+        System.out.println("--------------------------------------------");
+    }
+
+
 
 
 
