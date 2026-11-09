@@ -109,7 +109,7 @@ public class Aplicacion {
                             sc.nextLine();
 
                             producto = new Bebida(codigoProducto, nombreProducto, descripcionProducto,
-                                    precioBaseProducto, tiempoPreparacionProducto,
+                                    precioBaseProducto, tiempoPreparacionProducto, restaurante,
                                     volumen, tempServicio, tipoTemp, prepEspecial);
 
                             break;
@@ -166,7 +166,7 @@ public class Aplicacion {
                     String direccionCliente = sc.nextLine();
 
 
-                    Cliente cliente = new Cliente(nombreCliente, documentoCliente, telefonoCliente, correoCliente, direccionCliente);
+                    Cliente cliente = new Cliente(nombreCliente, documentoCliente, telefonoCliente, correoCliente, direccionCliente, restaurante);
 
                     if (restaurante.registrarCliente(cliente)) {
                         System.out.println("Cliente registrado correctamente.");
@@ -209,6 +209,8 @@ public class Aplicacion {
                 case 6:
                     //Registrar pedidos de clientes, permitiendo seleccionar varios productos y sus
                     // respectivas cantidades, sin confirmar todavía la compra.
+                    System.out.println("--- Registrar Pedidos ---");
+
 
                     break;
                 case 7:

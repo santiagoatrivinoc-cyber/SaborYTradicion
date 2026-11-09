@@ -1,4 +1,5 @@
-
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Producto {
     private String codigo;
@@ -6,14 +7,18 @@ public abstract class Producto {
     private String descripcion;
     private double precioBase;
     private int tiempoPreparacion;
+    private Restaurante restaurante;
+    private List<DetallePedido> listaDetallesPedido;
 
 
-    public Producto(String codigo, String nombre, String descripcion, double precioBase, int tiempoPreparacion) {
+    public Producto(String codigo, String nombre, String descripcion, double precioBase, int tiempoPreparacion, Restaurante restaurante) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precioBase = precioBase;
         this.tiempoPreparacion = tiempoPreparacion;
+        this.restaurante = restaurante;
+        listaDetallesPedido = new ArrayList<>();
     }
 
     public String getCodigo() {
@@ -56,6 +61,20 @@ public abstract class Producto {
         this.tiempoPreparacion = tiempoPreparacion;
     }
 
+    public Restaurante getRestaurante() {
+        return restaurante;
+    }
+    public void setRestaurante(Restaurante restaurante) {
+        this.restaurante = restaurante;
+    }
+
+    public List<DetallePedido> getListaDetallesPedido() {
+        return listaDetallesPedido;
+    }
+    public void setListaDetallesPedido(List<DetallePedido> listaDetallesPedido) {
+        this.listaDetallesPedido = listaDetallesPedido;
+    }
+
     @Override
     public String toString() {
         return "Producto{" +
@@ -64,8 +83,12 @@ public abstract class Producto {
                 ", descripcion='" + descripcion + '\'' +
                 ", precioBase=" + precioBase +
                 ", tiempoPreparacion=" + tiempoPreparacion +
+                ", restaurante=" + restaurante +
+                ", listaDetallesPedido=" + listaDetallesPedido +
                 '}';
     }
 
     public abstract double calcularPrecioVenta();
+
+    public abstract boolean validarCondicionesCalidad();
 }

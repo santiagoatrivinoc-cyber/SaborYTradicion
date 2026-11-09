@@ -1,16 +1,23 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Cliente {
     private String nombre;
     private String documento;
     private String telefono;
     private String correo;
     private String direccion;
+    private Restaurante restaurante;
+    private List<Pedido> listaPedidos;
 
-    public Cliente(String nombre, String documento, String telefono, String correo, String direccion) {
+    public Cliente(String nombre, String documento, String telefono, String correo, String direccion, Restaurante restaurante) {
         this.nombre = nombre;
         this.documento = documento;
         this.telefono = telefono;
         this.correo = correo;
         this.direccion = direccion;
+        this.restaurante = restaurante;
+        listaPedidos = new ArrayList<>();
     }
 
     public String getNombre() {
@@ -51,6 +58,20 @@ public class Cliente {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    public Restaurante getRestaurante() {
+        return restaurante;
+    }
+    public void setRestaurante(Restaurante restaurante) {
+        this.restaurante = restaurante;
+    }
+
+    public List<Pedido> getListaPedidos() {
+        return listaPedidos;
+    }
+    public void setListaPedidos(List<Pedido> listaPedidos) {
+        this.listaPedidos = listaPedidos;
     }
 
     @Override
