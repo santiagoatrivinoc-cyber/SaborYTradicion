@@ -277,8 +277,9 @@ public class Aplicacion {
                     System.out.println("Cual es la modalidad de entrega:" +
                             "\n1. Para consumo en el restaurante" +
                             "\n2. Para envio a domicilio");
-                    int opcionEntrega = sc.nextInt();
-                    while(opcionEntrega < 1 && opcionEntrega > 2) {
+                    int opcionEntrega = 0;
+                    while(opcionEntrega < 1 || opcionEntrega > 2) {
+                        opcionEntrega = sc.nextInt();
                         switch (opcionEntrega) {
                             case 1: {
                                 modalidadEntrega = ModalidadEntrega.CONSUMO_RESTAURANTE;
@@ -290,22 +291,37 @@ public class Aplicacion {
                             }
                             default: {
                                 System.out.println("La opcion que elegiste no existe, ingresa una opcion disponible:");
-                                opcionEntrega = sc.nextInt();
                             }
                         }
                     }
 
-                    Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, EstadoEntrega.PENDIENTE, cliente, rapidoExpress);
+                    ServicioDomicilio servicioDomicilio = null;
+                    if(modalidadEntrega == ModalidadEntrega.DOMICILIO){
+                        System.out.println("Elige una empresa para el domicilio:" +
+                                "\n1. Entrega Segura" +
+                                "\n2. Rapido Express");
+                        int opcionDomicilio = 0;
+                        while(opcionDomicilio < 1 || opcionDomicilio > 2){
+                            opcionDomicilio = sc.nextInt();
+                            switch (opcionDomicilio) {
+                                case 1: {
+                                    servicioDomicilio = entregaSegura;
+                                    break;
+                                }
+                                case 2: {
+                                    servicioDomicilio = rapidoExpress;
+                                    break;
+                                }
+                                default: {
+                                    System.out.println("La opcion que elegiste no existe, ingresa una opcion disponible:");
+                                }
+                            }
+                        }
+                    }
 
-
-
-
-
-
-
-
-
-
+                    Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, EstadoEntrega.PENDIENTE, cliente, servicioDomicilio);
+                    cliente.registrarPedido(pedido);
+                    System.out.println("El pedido ha sido registrado correctamente");
 
                     break;
                 }
