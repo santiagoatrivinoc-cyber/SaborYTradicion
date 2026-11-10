@@ -418,6 +418,14 @@ public class Aplicacion {
                 case 10: {
                     //Consultar los pedidos realizados por un cliente, mostrando los productos adquiridos,
                     // las cantidades, los valores y el estado de cada pedido.
+                    System.out.println("--- Consultar Pedidos ---");
+
+                    System.out.println("Ingresa el documento del cliente: ");
+                    String documento = sc.nextLine();
+
+                    Cliente cliente = restaurante.buscarCliente(documento);
+                    cliente.mostrarHistorialPedidos();
+                    System.out.println("---------------------------------------------------------");
                 }
                     break;
                 case 11: {
