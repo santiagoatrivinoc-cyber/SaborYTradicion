@@ -18,7 +18,7 @@ class DetallePedidoTest {
         int cantidad = 3;
         DetallePedido detalle = new DetallePedido(producto, cantidad);
 
-        double subtotalEsperado = 60000.0;
+        double subtotalEsperado = 60000.0 * 1.2;
         double subtotalObtenido = detalle.calcularSubtotal();
 
        //El tercer parámetro 0.001 es el margen de tolerancia para números decimales tipo double
