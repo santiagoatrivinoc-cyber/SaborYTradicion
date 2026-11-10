@@ -269,7 +269,65 @@ public class Restaurante {
         return ingresosDomicilios;
     }
 
+    public Producto consultarProductoMasVendido() {
+        Producto masVendido = null;
+        int maxCantidad = 0;
 
+        for (Producto producto : this.menu) {
+            int cantidadTotalProducto = 0;
+
+            for (Pedido pedido : listaPedidos) {
+                if (pedido.getEstadoPedido() == EstadoPedido.CONFIRMADO || pedido.getEstadoPedido() == EstadoPedido.ENTREGADO) {
+                    for (DetallePedido detalle : pedido.getListaDetallesPedidos()) {
+                        if (detalle.getProducto().getCodigo().equals(producto.getCodigo())) {
+                            cantidadTotalProducto += detalle.getCantidad();
+                        }
+                    }
+                }
+            }
+
+            if (cantidadTotalProducto > maxCantidad) {
+                maxCantidad = cantidadTotalProducto;
+                masVendido = producto;
+            }
+        }
+
+        return masVendido;
+    }
+
+    public String consultarCategoriaProductoMayorIngreso() {
+        double ingresosPlatos = 0.0;
+        double ingresosBebidas = 0.0;
+        double ingresosPostres = 0.0;
+
+        for (Pedido pedido : listaPedidos) {
+            if (pedido.getEstadoPedido() == EstadoPedido.CONFIRMADO || pedido.getEstadoPedido() == EstadoPedido.ENTREGADO) {
+                for (DetallePedido detalle : pedido.getListaDetallesPedidos()) {
+                    Producto prod = detalle.getProducto();
+                    double subtotal = detalle.calcularSubtotal();
+
+                    if (prod instanceof PlatoFuerte) {
+                        ingresosPlatos += subtotal;
+                    } else if (prod instanceof Bebida) {
+                        ingresosBebidas += subtotal;
+                    } else if (prod instanceof Postre) {
+                        ingresosPostres += subtotal;
+                    }
+                }
+            }
+        }
+
+        if (ingresosPlatos == 0.0 && ingresosBebidas == 0.0 && ingresosPostres == 0.0) {
+            return "Sin ventas registradas";
+        }
+        if (ingresosPlatos >= ingresosBebidas && ingresosPlatos >= ingresosPostres) {
+            return "Platos Fuertes";
+        } else if (ingresosBebidas >= ingresosPostres) {
+            return "Bebidas";
+        } else {
+            return "Postres";
+        }
+    }
 
 
 
