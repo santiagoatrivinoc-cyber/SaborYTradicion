@@ -246,7 +246,7 @@ public class Aplicacion {
                         break;
                     }
 
-                    System.out.println("¿Que deseas pedir? (Ingresa el codigo de lo que desees)");
+                    System.out.println("¿Qué deseas pedir?(Ingresa el codigo de lo que desees)");
                     restaurante.consultarProductosDisponibles();
                     String codigo = sc.nextLine();
 
@@ -256,7 +256,7 @@ public class Aplicacion {
                         break;
                     }
 
-                    System.out.println("¿Cuantos " + producto.getNombre() + " deseas?");
+                    System.out.println("¿Cuántos " + producto.getNombre() + " deseas?");
                     int cantidadProductos = sc.nextInt();
                     sc.nextLine();
 
@@ -492,10 +492,50 @@ public class Aplicacion {
                 }
                     break;
                 case 11: {
+
                     //Actualizar el estado de los pedidos, considerando los estados pendiente,
                     // confirmado, entregado y cancelado, respetando las condiciones establecidas.
-                }
+
+                    System.out.println("-----Estado de pedidos-----");
+                    System.out.println("Ingresa el código del pedido: ");
+                    String codigoPedido = sc.nextLine();
+
+                    Pedido pedidoBuscado = restaurante.buscarPedido(codigoPedido);
+
+                    if (pedidoBuscado == null) {
+                        System.out.println("No se encontró ningún pedido con el código " + codigoPedido + ".");
+                        break;
+                    }
+
+                    System.out.println("Estado actual: " + pedidoBuscado.getEstadoEntrega());
+                    System.out.println("1. Marcar como entregado  2. Cancelar  3. Solo consultar");
+                    int opcionEstado = sc.nextInt();
+                    sc.nextLine();
+
+                    switch (opcionEstado) {
+                        case 1:
+                            if (pedidoBuscado.marcarComoEntregado()) {
+                                System.out.println("Pedido entregado correctamente.");
+                            } else {
+                                System.out.println("No se puede entregar: el pedido debe estar confirmado.");
+                            }
+                            break;
+                        case 2:
+                            if (pedidoBuscado.cancelar()) {
+                                System.out.println("Pedido cancelado.");
+                            } else {
+                                System.out.println("No se puede cancelar: el pedido ya fue entregado o cancelado.");
+                            }
+                            break;
+                        case 3:
+                            System.out.println("Estado del pedido: " + pedidoBuscado.getEstadoEntrega());
+                            break;
+                        default:
+                            System.out.println("Opción no válida.");
+                    }
                     break;
+                }
+
                 case 12: {
                     //Consultar el estado de los pedidos, considerando los estados pendiente,
                     // confirmado, entregado y cancelado, respetando las condiciones establecidas.
