@@ -33,6 +33,6 @@ public class DetallePedido {
 
     @Override
     public String toString() {
-        return cantidad + "x " + producto.getNombre() + " - Subtotal: $" + calcularSubtotal()+"\n";
+        return cantidad + " x " + producto.getNombre() + " = Subtotal: $" + calcularSubtotal()+"\n";
     }
 }

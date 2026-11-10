@@ -411,7 +411,8 @@ public class Aplicacion {
                     String codigoPedido = sc.nextLine();
 
                     Pedido pedido = restaurante.buscarPedido(codigoPedido);
-
+                    double valorTotal = pedido.calcularValorTotal();
+                    System.out.println("El valor total de este pedido es de: " + valorTotal);
                 }
                     break;
                 case 10: {

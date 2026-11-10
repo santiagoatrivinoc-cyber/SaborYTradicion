@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +18,7 @@ public class Pedido {
         this.fecha = fecha;
         this.modalidadEntrega = modalidadEntrega;
         this.estadoEntrega = estadoEntrega;
+        this.costoDomicilio = 0;
         this.cliente = cliente;
         this.empresaTransporte = empresaTransporte; // 👈 ¡Faltaba esta línea en tu constructor!
         this.listaDetallesPedidos = new ArrayList<>();
