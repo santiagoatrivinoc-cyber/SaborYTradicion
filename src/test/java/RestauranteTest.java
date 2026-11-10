@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class RestauranteTest {
@@ -13,17 +15,33 @@ class RestauranteTest {
     RapidoExpress rapidoExpress = new RapidoExpress();
 
     void implementarMetodosInicialesNecesarios(){
+
         restaurante.registrarCliente(cliente);
         restaurante.registrarProducto(productoValido);
         restaurante.registrarProducto(productoInvalido);
+
     }
 
     @Test
-    void
+    void evitarElRegistroDeClientesDuplicados() {
+        Cliente clienteDuplicado = new Cliente("Miguel Lopez", "1095552346", "3001234567", "miguel@gmail.com", "Calle 10 # 15-20", restaurante);
+
+        boolean segundoRegistro = restaurante.registrarCliente(clienteDuplicado);
+
+        assertTrue(segundoRegistro, "No debe registrar un cliente con un documento ya existente.");
+        assertEquals(1, restaurante.getListaClientes().size());
+    }
 
     @Test
-    void pruDeTest(){
+    void confirmarPedidoConProductoRechazado() {
+        Pedido pedido = new Pedido("PED00001", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, rapidoExpress);
+        pedido.agregarProducto(productoInvalido, 2); // Bebida no cumple control de calidad
 
+        boolean resultado =
+
+        assertFalse(resultado, "El pedido no debe confirmarse si contiene productos que no cumplen calidad.");
+        assertEquals(EstadoPedido.PENDIENTE, pedido.getEstado());
+        assertEquals(0, restaurante.getPedidos().size());
     }
 
 }

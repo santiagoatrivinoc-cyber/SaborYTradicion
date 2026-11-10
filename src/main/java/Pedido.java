@@ -7,20 +7,19 @@ public class Pedido {
     private String codigo;
     private LocalDateTime fecha;
     private ModalidadEntrega modalidadEntrega;
-    private EstadoEntrega estadoEntrega;
+    private EstadoPedido estadoPedido;
     private double costoDomicilio;
     private Cliente cliente;
     private ServicioDomicilio empresaTransporte;
     private List<DetallePedido> listaDetallesPedidos;
 
-    public Pedido(String codigo, LocalDateTime fecha, ModalidadEntrega modalidadEntrega, EstadoEntrega estadoEntrega, Cliente cliente, ServicioDomicilio empresaTransporte) {
+    public Pedido(String codigo, LocalDateTime fecha, ModalidadEntrega modalidadEntrega, Cliente cliente, ServicioDomicilio empresaTransporte) {
         this.codigo = codigo;
         this.fecha = fecha;
         this.modalidadEntrega = modalidadEntrega;
-        this.estadoEntrega = estadoEntrega;
         this.costoDomicilio = 0;
         this.cliente = cliente;
-        this.empresaTransporte = empresaTransporte; // 👈 ¡Faltaba esta línea en tu constructor!
+        this.empresaTransporte = empresaTransporte; // ¡Faltaba esta línea en tu constructor!
         this.listaDetallesPedidos = new ArrayList<>();
     }
 
@@ -46,11 +45,11 @@ public class Pedido {
         this.modalidadEntrega = modalidadEntrega;
     }
 
-    public EstadoEntrega getEstadoEntrega() {
-        return estadoEntrega;
+    public EstadoPedido getEstadoPedido() {
+        return estadoPedido;
     }
-    public void setEstadoEntrega(EstadoEntrega estadoEntrega) {
-        this.estadoEntrega = estadoEntrega;
+    public void setEstadoPedido(EstadoPedido estadoPedido) {
+        this.estadoPedido = estadoPedido;
     }
 
     public double getCostoDomicilio() {
@@ -107,11 +106,11 @@ public class Pedido {
     }
 
     public void marcarEntrega(){
-        this.estadoEntrega = EstadoEntrega.ENTREGADO;
+        this.estadoPedido = EstadoPedido.ENTREGADO;
     }
 
     public void marcarCancelacion(){
-        this.estadoEntrega = EstadoEntrega.CANCELADO;
+        this.estadoPedido = EstadoPedido.CANCELADO;
     }
 
     @Override
@@ -120,15 +119,15 @@ public class Pedido {
                 "\ncodigo: " + codigo +
                 "\nfecha: " + fecha +
                 "\nmodalidadEntrega: " + modalidadEntrega +
-                "\nestadoEntrega: " + estadoEntrega +
+                "\nestadoPedido: " + estadoPedido +
                 "\ncostoDomicilio: " + costoDomicilio +
                 "\nvalor total: $" + calcularValorTotal();
     }
 
     //método para marcar como entregado
     public boolean marcarComoEntregado() {
-        if (estadoEntrega == EstadoEntrega.CONFIRMADO) {
-            estadoEntrega = EstadoEntrega.ENTREGADO;
+        if (estadoPedido == EstadoPedido.CONFIRMADO) {
+            estadoPedido = EstadoPedido.ENTREGADO;
             return true;
         }
         return false;
@@ -136,8 +135,8 @@ public class Pedido {
 
 //método para cancelar
     public boolean cancelar() {
-        if (estadoEntrega == EstadoEntrega.PENDIENTE || estadoEntrega == EstadoEntrega.CONFIRMADO) {
-            estadoEntrega = EstadoEntrega.CANCELADO;
+        if (estadoPedido == EstadoPedido.PENDIENTE || estadoPedido == EstadoPedido.CONFIRMADO) {
+            estadoPedido = EstadoPedido.CANCELADO;
             return true;
         }
         return false;

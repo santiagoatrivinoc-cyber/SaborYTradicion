@@ -162,8 +162,85 @@ public class Restaurante {
 
     public void consultarPedidosCliente(){
         for(Pedido pedido : listaPedidos){
-            System.out.println(pedido.getCodigo() + ": " + pedido.getEstadoEntrega());
+            System.out.println(pedido.getCodigo() + ": " + pedido.getEstadoPedido());
         }
+    }
+    public boolean validarRequisitosPedido(Pedido pedido, double distanciaKm, ServicioDomicilio empresa) {
+        if (pedido == null) {
+            return false;
+        }
+
+        if (pedido.getCliente() == null || buscarCliente(pedido.getCliente().getDocumento()) == null) {
+            return false;
+        }
+
+        // Verificar que el pedido tenga al menos un producto
+        if (pedido.getListaDetallesPedidos() == null || pedido.getListaDetallesPedidos().isEmpty()) {
+            return false;
+        }
+
+        // 2, 3 y 4. Verificar productos en el menú, cantidades y condiciones de calidad
+        for (DetallePedido detalle : pedido.getListaDetallesPedidos()) {
+            if (detalle == null || detalle.getProducto() == null) {
+                return false;
+            }
+
+            // Validar que la cantidad sea mayor a cero
+            if (detalle.getCantidad() <= 0) {
+                return false;
+            }
+
+            // Validar que el producto pertenezca al menú del restaurante
+            Producto productoMenu = buscarProducto(detalle.getProducto().getCodigo());
+            if (productoMenu == null) {
+                return false;
+            }
+
+            // Validar que el producto cumpla con los estándares de calidad
+            if (!detalle.getProducto().validarCondicionesCalidad()) {
+                return false;
+            }
+        }
+
+        // 5. Si la modalidad es a domicilio, validar la empresa y la distancia
+        if (pedido.getModalidadEntrega() == ModalidadEntrega.DOMICILIO) {
+            if (empresa == null) {
+                return false;
+            }
+            if (!empresa.aceptarRecorrido(distanciaKm)) {
+                return false; // La empresa no acepta el recorrido por distancia exedida o inválida
+            }
+        }
+
+        return true;
+    }
+    public double confirmarPedido(Pedido pedido, double distanciaKm) {
+        // Validar requisitos (para consumo en restaurante no se requiere empresa de domicilio)
+        if (!validarRequisitosPedido(pedido, distanciaKm, null)) {
+            return -1.0;
+        }
+
+        // Evitar confirmaciones repetidas
+        if (pedido.getEstadoPedido() != EstadoPedido.PENDIENTE) {
+            return -1.0;
+        }
+
+        // Evitar códigos de pedido duplicados en el restaurante
+        if (buscarPedido(pedido.getCodigo()) != null) {
+            return -1.0;
+        }
+
+        // Cambiar estado a CONFIRMADO
+        pedido.setEstadoPedido(EstadoPedido.CONFIRMADO);
+        pedido.setCostoDomicilio(0.0);
+        pedido.setEmpresaTransporte(null);
+
+        // Registrar en la lista global del restaurante y en el historial del cliente
+        this.listaPedidos.add(pedido);
+        pedido.getCliente().registrarPedido(pedido);
+
+        // Retornar el valor total del pedido
+        return pedido.calcularValorTotal();
     }
 
 

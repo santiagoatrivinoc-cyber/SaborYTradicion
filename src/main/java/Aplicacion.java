@@ -332,7 +332,8 @@ public class Aplicacion {
                     }
 
 
-                    Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, EstadoEntrega.PENDIENTE, cliente, servicioDomicilio);
+                    Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, cliente, servicioDomicilio);
+                    pedido.setEstadoPedido(EstadoPedido.PENDIENTE);
 
 
 
@@ -456,7 +457,7 @@ public class Aplicacion {
                             System.out.println(" Empresa de transporte asociada: " + pedidoActual.getEmpresaTransporte().getNombreEmpresa());
                         }
 
-                        pedidoActual.setEstadoEntrega(EstadoEntrega.CONFIRMADO);
+                        pedidoActual.setEstadoPedido(EstadoPedido.CONFIRMADO);
                         System.out.println("Pedido confirmado con éxito");
                         System.out.println(pedidoActual.toString());
 
@@ -509,7 +510,7 @@ public class Aplicacion {
                         break;
                     }
 
-                    System.out.println("Estado actual: " + pedidoBuscado.getEstadoEntrega());
+                    System.out.println("Estado actual: " + pedidoBuscado.getEstadoPedido());
                     System.out.println("1. Marcar como entregado  2. Cancelar  3. Solo consultar");
                     int opcionEstado = sc.nextInt();
                     sc.nextLine();
@@ -530,7 +531,7 @@ public class Aplicacion {
                             }
                             break;
                         case 3:
-                            System.out.println("Estado del pedido: " + pedidoBuscado.getEstadoEntrega());
+                            System.out.println("Estado del pedido: " + pedidoBuscado.getEstadoPedido());
                             break;
                         default:
                             System.out.println("Opción no válida.");
@@ -570,7 +571,7 @@ public class Aplicacion {
                     boolean hayPedidosProcesados = false;
 
                     for (Pedido pedido : pedidos) {
-                        if (pedido == null || pedido.getEstadoEntrega() == EstadoEntrega.CANCELADO) {
+                        if (pedido == null || pedido.getEstadoPedido() == EstadoPedido.CANCELADO) {
                             continue;
                         }
 
