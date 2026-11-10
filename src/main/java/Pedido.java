@@ -17,12 +17,12 @@ public class Pedido {
         this.codigo = codigo;
         this.fecha = fecha;
         this.modalidadEntrega = modalidadEntrega;
-        this.costoDomicilio = 0;
+        this.estadoPedido = EstadoPedido.PENDIENTE;
+        this.costoDomicilio = 0.0;
         this.cliente = cliente;
-        this.empresaTransporte = empresaTransporte; // ¡Faltaba esta línea en tu constructor!
+        this.empresaTransporte = empresaTransporte;
         this.listaDetallesPedidos = new ArrayList<>();
     }
-
 
     public String getCodigo() {
         return codigo;
@@ -69,7 +69,6 @@ public class Pedido {
     public ServicioDomicilio getEmpresaTransporte() {
         return empresaTransporte;
     }
-
     public void setEmpresaTransporte(ServicioDomicilio empresaTransporte) {
         this.empresaTransporte = empresaTransporte;
     }
@@ -88,7 +87,6 @@ public class Pedido {
                 detalle.setCantidad(detalle.getCantidad() + cantidad);
                 return;
             }
-
         }
         this.listaDetallesPedidos.add(new DetallePedido(producto, cantidad));
     }
@@ -105,14 +103,6 @@ public class Pedido {
         return calcularValorProductos() + costoDomicilio;
     }
 
-    public void marcarEntrega(){
-        this.estadoPedido = EstadoPedido.ENTREGADO;
-    }
-
-    public void marcarCancelacion(){
-        this.estadoPedido = EstadoPedido.CANCELADO;
-    }
-
     @Override
     public String toString() {
         return "----- Pedido -----" +
@@ -120,11 +110,11 @@ public class Pedido {
                 "\nfecha: " + fecha +
                 "\nmodalidadEntrega: " + modalidadEntrega +
                 "\nestadoPedido: " + estadoPedido +
-                "\ncostoDomicilio: " + costoDomicilio +
+                "\ncostoDomicilio: $" + costoDomicilio +
                 "\nvalor total: $" + calcularValorTotal();
     }
 
-    //método para marcar como entregado
+    // Método seguro para marcar como entregado (validando que esté confirmado previamente)
     public boolean marcarComoEntregado() {
         if (estadoPedido == EstadoPedido.CONFIRMADO) {
             estadoPedido = EstadoPedido.ENTREGADO;
@@ -133,7 +123,7 @@ public class Pedido {
         return false;
     }
 
-//método para cancelar
+    // Método seguro para cancelar pedido
     public boolean cancelarPedido() {
         if (estadoPedido == EstadoPedido.PENDIENTE || estadoPedido == EstadoPedido.CONFIRMADO) {
             estadoPedido = EstadoPedido.CANCELADO;
