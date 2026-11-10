@@ -1,20 +1,25 @@
-public class EntregaSegura implements ServicioDomicilio{
+public class EntregaSegura implements ServicioDomicilio {
 
     @Override
-    public boolean aprobarDistancia(double distanciaKm) {
-        if (distanciaKm <= 20){
-            return true;
-        } else{
-            return false;
-        }
+    public boolean aceptarRecorrido(double distanciaKm) {
+        return distanciaKm > 0 && distanciaKm <= 20.0;
     }
 
     @Override
     public double calcularCostoEnvio(double distanciaKm) {
-        double costoEnvio = 7000+(1000*distanciaKm);
-        if(distanciaKm > 5){
-            costoEnvio += 3000;
+        if (!aceptarRecorrido(distanciaKm)) {
+            throw new IllegalArgumentException("EntregaSegura no acepta recorridos superiores a 20 km.");
         }
-        return costoEnvio;
+
+        double costo = 7000.0 + (1000.0 * distanciaKm);
+        if (distanciaKm > 5.0) {
+            costo += 3000.0;
+        }
+        return costo;
+    }
+
+    @Override
+    public String getNombreEmpresa() {
+        return "EntregaSegura";
     }
 }

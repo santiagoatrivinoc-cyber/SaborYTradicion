@@ -7,6 +7,7 @@ public class Restaurante {
     private String direccion;
     private List<Producto> menu;
     private List<Cliente> listaClientes;
+    private List<Pedido> listaPedidos;
 
     public Restaurante(String nombre, String nit, String direccion) {
         this.nombre = nombre;
@@ -16,12 +17,12 @@ public class Restaurante {
         //inicializar listas
         menu = new ArrayList<>();
         listaClientes = new ArrayList<>();
+        listaPedidos = new ArrayList<>();
     }
 
     public String getNombre() {
         return nombre;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -29,7 +30,6 @@ public class Restaurante {
     public String getNit() {
         return nit;
     }
-
     public void setNit(String nit) {
         this.nit = nit;
     }
@@ -37,7 +37,6 @@ public class Restaurante {
     public String getDireccion() {
         return direccion;
     }
-
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
@@ -45,7 +44,6 @@ public class Restaurante {
     public List<Producto> getMenu() {
         return menu;
     }
-
     public void setMenu(List<Producto> menu) {
         this.menu = menu;
     }
@@ -53,9 +51,15 @@ public class Restaurante {
     public List<Cliente> getListaClientes() {
         return listaClientes;
     }
-
     public void setListaClientes(List<Cliente> listaClientes) {
         this.listaClientes = listaClientes;
+    }
+
+    public List<Pedido> getListaPedidos() {
+        return listaPedidos;
+    }
+    public void setListaPedidos(List<Pedido> listaPedidos) {
+        this.listaPedidos = listaPedidos;
     }
 
     @Override
@@ -127,6 +131,39 @@ public class Restaurante {
             System.out.println("\n\n");
         }
         System.out.println("--------------------------------------------");
+    }
+
+    public boolean verificarPedido(String codigo) {
+        for (Pedido pedido : listaPedidos) {
+            if (pedido.getCodigo().equals(codigo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean registrarPedido(Pedido pedido) {
+        if (verificarCliente(pedido.getCodigo())) {
+            return false;
+        }
+        listaPedidos.add(pedido);
+        return true;
+    }
+
+    public Pedido buscarPedido(String codigo){
+        for(Pedido pedido : listaPedidos){
+            if(pedido.getCodigo().equals(codigo)){
+                return pedido;
+            }
+        }
+        System.out.println("Pedido no encontrado");
+        return null;
+    }
+
+    public void consultarPedidosCliente(){
+        for(Pedido pedido : listaPedidos){
+            System.out.println(pedido.getCodigo() + ": " + pedido.getEstadoEntrega());
+        }
     }
 
 

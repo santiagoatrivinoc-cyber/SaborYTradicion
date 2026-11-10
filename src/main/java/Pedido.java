@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +18,10 @@ public class Pedido {
         this.fecha = fecha;
         this.modalidadEntrega = modalidadEntrega;
         this.estadoEntrega = estadoEntrega;
+        this.costoDomicilio = 0;
         this.cliente = cliente;
-        listaDetallesPedidos = new ArrayList<>();
+        this.empresaTransporte = empresaTransporte; // 👈 ¡Faltaba esta línea en tu constructor!
+        this.listaDetallesPedidos = new ArrayList<>();
     }
 
 
@@ -85,28 +86,32 @@ public class Pedido {
     public void agregarProducto(Producto producto, int cantidad){
         for(DetallePedido detalle : listaDetallesPedidos) {
             if(detalle.getProducto().getCodigo().equals(producto.getCodigo())){
-                detalle.setCantidad(detalle.getCantidad()+cantidad);
+                detalle.setCantidad(detalle.getCantidad() + cantidad);
                 return;
             }
 
         }
-        this.listaDetallesPedidos.add(new DetallePedido(producto,cantidad));
+        this.listaDetallesPedidos.add(new DetallePedido(producto, cantidad));
     }
 
     public double calcularValorProductos(){
-        return 0;
+        double totalProductos = 0;
+        for (DetallePedido detalle : listaDetallesPedidos) {
+            totalProductos += detalle.calcularSubtotal();
+        }
+        return totalProductos;
     }
 
     public double calcularValorTotal(){
-        return 0;
+        return calcularValorProductos() + costoDomicilio;
     }
 
     public void marcarEntrega(){
-
+        this.estadoEntrega = EstadoEntrega.ENTREGADO;
     }
 
     public void marcarCancelacion(){
-
+        this.estadoEntrega = EstadoEntrega.CANCELADO;
     }
 
     @Override
@@ -116,6 +121,7 @@ public class Pedido {
                 "\nfecha: " + fecha +
                 "\nmodalidadEntrega: " + modalidadEntrega +
                 "\nestadoEntrega: " + estadoEntrega +
-                "\ncostoDomicilio: " + costoDomicilio;
+                "\ncostoDomicilio: " + costoDomicilio +
+                "\nvalor total: $" + calcularValorTotal();
     }
 }
