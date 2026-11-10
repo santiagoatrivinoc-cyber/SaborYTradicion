@@ -82,6 +82,7 @@ class RestauranteTest {
         assertEquals(12500.0, ingresosDomicilios);
     }
 
+    @Test
     void testObtenerCategoriaConMayoresIngresos() {
         // Postre Aprobado (5000 + 15% = $5.750)
         Postre postreValido = new Postre("PO01", "Tres Leches", "Postre", 5000, 15, restaurante, 200, 4.0, true); // Refrigerado (+5% base = +$250) -> $6.000
@@ -97,7 +98,7 @@ class RestauranteTest {
         p2.agregarProducto(postreValido, 3);
         restaurante.confirmarPedido(p2, 0);
 
-        String categoriaLider = restaurante.obtenerCategoriaConMayoresIngresos();
+        String categoriaLider = restaurante.consultarCategoriaProductoMayorIngreso();
         assertEquals("Postres", categoriaLider);
     }
 
