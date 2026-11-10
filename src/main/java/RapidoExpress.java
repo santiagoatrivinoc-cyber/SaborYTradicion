@@ -8,13 +8,13 @@ public class RapidoExpress implements ServicioDomicilio {
     @Override
     public double calcularCostoEnvio(double distanciaKm) {
         if (!aceptarRecorrido(distanciaKm)) {
-            throw new IllegalArgumentException("RápidoExpress no acepta recorridos superiores a 12 km.");
+            throw new IllegalArgumentException("RapidoExpress no acepta recorridos superiores a 12 km.");
         }
         return 5000.0 + (1500.0 * distanciaKm);
     }
 
     @Override
     public String getNombreEmpresa() {
-        return "RápidoExpress";
+        return "RapidoExpress";
     }
 }
