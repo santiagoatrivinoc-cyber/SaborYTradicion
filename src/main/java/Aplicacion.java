@@ -1,6 +1,8 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 ;
 public class Aplicacion {
@@ -215,7 +217,7 @@ public class Aplicacion {
                         if (cumple) {
                             System.out.println("[APROBADO] " + producto.getNombre() + " (" + producto.getCodigo() + ") cumple con las condiciones de calidad.");
                         } else {
-                            System.out.println("[RECHAZADO] " + producto.getNombre() + " (" + producto.getCodigo() + ") NO cumple con las condiciones de calidad.");
+                            System.out.println("[RECHAZADO] " + producto.getNombre() + " (" + producto.getCodigo() + ") NO cumple con las condiciones de calidad, se debe eliminar.");
                             hayIncumplidos = true;
                         }
                     }
@@ -246,7 +248,7 @@ public class Aplicacion {
                         break;
                     }
 
-                    System.out.println("¿Que deseas pedir? (Ingresa el codigo de lo que desees)");
+                    System.out.println("¿Qué deseas pedir?(Ingresa el codigo de lo que desees)");
                     restaurante.consultarProductosDisponibles();
                     String codigo = sc.nextLine();
 
@@ -256,7 +258,7 @@ public class Aplicacion {
                         break;
                     }
 
-                    System.out.println("¿Cuantos " + producto.getNombre() + " deseas?");
+                    System.out.println("¿Cuántos " + producto.getNombre() + " deseas?");
                     int cantidadProductos = sc.nextInt();
                     sc.nextLine();
 
@@ -396,8 +398,71 @@ public class Aplicacion {
                     //Confirmar pedidos, verificando que el cliente esté registrado, los productos
                     // pertenezcan al menú, las cantidades sean válidas y todos los productos cumplan
                     // las condiciones de calidad. Para los domicilios, también se debe verificar la aceptación del servicio.
+
+                        System.out.println("--- Confirmar Pedidos ---");
+
+                        if (pedidoActual == null) {
+                            System.out.println(" No hay ningún pedido activo registrado para confirmar.");
+                            break;
+                        }
+
+                        if (pedidoActual.getCliente() == null) {
+                            System.out.println(" Error: El pedido no tiene un cliente asociado válido.");
+                            break;
+                        }
+
+                        if (pedidoActual.getListaDetallesPedidos().isEmpty()) {
+                            System.out.println("Error: El pedido no contiene productos.");
+                            break;
+                        }
+
+                        boolean todoValido = true;
+
+                        for (DetallePedido detalle : pedidoActual.getListaDetallesPedidos()) {
+                            Producto producto = detalle.getProducto();
+
+                            if (detalle.getCantidad() < 1) {
+                                System.out.println("Error: La cantidad para el producto " + producto.getNombre() + " no es válida.");
+                                todoValido = false;
+                                break;
+                            }
+
+                            boolean perteneceAlMenu = restaurante.getMenu().contains(producto);
+                            if (!perteneceAlMenu) {
+                                System.out.println(" Error: El producto " + producto.getNombre() + " ya no pertenece al menú del restaurante.");
+                                todoValido = false;
+                                break;
+                            }
+
+                            if (!producto.validarCondicionesCalidad()) {
+                                System.out.println("Error de Calidad: El producto " + producto.getNombre() + " NO cumple con las condiciones de calidad requeridas.");
+                                todoValido = false;
+                                break;
+                            }
+                        }
+
+                        if (!todoValido) {
+                            System.out.println("El pedido NO pudo ser confirmado debido a incumplimientos en las validaciones.");
+                            break;
+                        }
+
+                        if (pedidoActual.getModalidadEntrega() == ModalidadEntrega.DOMICILIO) {
+                            if (pedidoActual.getEmpresaTransporte() == null) {
+                                System.out.println(" Error: El pedido es a domicilio pero no tiene asignada ninguna empresa de transporte.");
+                                System.out.println("Por favor, gestione el domicilio primero en la opción 7.");
+                                break;
+                            }
+
+                            System.out.println(" Empresa de transporte asociada: " + pedidoActual.getEmpresaTransporte().getNombreEmpresa());
+                        }
+
+                        pedidoActual.setEstadoEntrega(EstadoEntrega.CONFIRMADO);
+                        System.out.println("Pedido confirmado con éxito");
+                        System.out.println(pedidoActual.toString());
+
+                        break;
                 }
-                    break;
+
                 case 9: {
                     //Calcular el valor total de un pedido, considerando los productos
                     // solicitados y el costo del domicilio cuando corresponda.
@@ -429,10 +494,50 @@ public class Aplicacion {
                 }
                     break;
                 case 11: {
+
                     //Actualizar el estado de los pedidos, considerando los estados pendiente,
                     // confirmado, entregado y cancelado, respetando las condiciones establecidas.
-                }
+
+                    System.out.println("-----Estado de pedidos-----");
+                    System.out.println("Ingresa el código del pedido: ");
+                    String codigoPedido = sc.nextLine();
+
+                    Pedido pedidoBuscado = restaurante.buscarPedido(codigoPedido);
+
+                    if (pedidoBuscado == null) {
+                        System.out.println("No se encontró ningún pedido con el código " + codigoPedido + ".");
+                        break;
+                    }
+
+                    System.out.println("Estado actual: " + pedidoBuscado.getEstadoEntrega());
+                    System.out.println("1. Marcar como entregado  2. Cancelar  3. Solo consultar");
+                    int opcionEstado = sc.nextInt();
+                    sc.nextLine();
+
+                    switch (opcionEstado) {
+                        case 1:
+                            if (pedidoBuscado.marcarComoEntregado()) {
+                                System.out.println("Pedido entregado correctamente.");
+                            } else {
+                                System.out.println("No se puede entregar: el pedido debe estar confirmado.");
+                            }
+                            break;
+                        case 2:
+                            if (pedidoBuscado.cancelar()) {
+                                System.out.println("Pedido cancelado.");
+                            } else {
+                                System.out.println("No se puede cancelar: el pedido ya fue entregado o cancelado.");
+                            }
+                            break;
+                        case 3:
+                            System.out.println("Estado del pedido: " + pedidoBuscado.getEstadoEntrega());
+                            break;
+                        default:
+                            System.out.println("Opción no válida.");
+                    }
                     break;
+                }
+
                 case 12: {
                     //Consultar el estado de los pedidos, considerando los estados pendiente,
                     // confirmado, entregado y cancelado, respetando las condiciones establecidas.
@@ -444,14 +549,118 @@ public class Aplicacion {
                 }
                     break;
                 case 13: {
-                    //Generar reportes de ventas, calculando los ingresos del restaurante, identificando
-                    // el producto con mayor cantidad de unidades vendidas y la categoría que genera
-                    // mayores ingresos, sin incluir los valores cobrados por los domicilios.
-                }
+                    System.out.println("--- REPORTE DE VENTAS ---");
+
+                    List<Pedido> pedidos = restaurante.getListaPedidos();
+
+                    if (pedidos == null) {
+                        System.out.println("No hay pedidos registrados para generar el reporte.");
+                        break;
+                    }
+
+                    double ingresosTotalesRestaurante = 0.0;
+
+                    double ingresosPlatoFuerte = 0.0;
+                    double ingresosBebida = 0.0;
+                    double ingresosPostre = 0.0;
+
+                    List<String> nombresProductos = new ArrayList<>();
+                    List<Integer> unidadesProductos = new ArrayList<>();
+
+                    boolean hayPedidosProcesados = false;
+
+                    for (Pedido pedido : pedidos) {
+                        if (pedido == null || pedido.getEstadoEntrega() == EstadoEntrega.CANCELADO) {
+                            continue;
+                        }
+
+                        List<DetallePedido> detalles = pedido.getListaDetallesPedidos();
+                        if (detalles != null) {
+                            for (DetallePedido detalle : detalles) {
+                                if (detalle != null) {
+                                    hayPedidosProcesados = true;
+                                    Producto producto = detalle.getProducto();
+                                    int cantidad = detalle.getCantidad();
+                                    double subtotalProducto = detalle.calcularSubtotal();
+
+                                    ingresosTotalesRestaurante += subtotalProducto;
+
+                                    String nombreProd = producto.getNombre();
+                                    int indexEncontrado = -1;
+                                    int k = 0;
+
+                                    for (String nombreExistente : nombresProductos) {
+                                        if (nombreExistente.equals(nombreProd)) {
+                                            indexEncontrado = k;
+                                            break;
+                                        }
+                                        k++;
+                                    }
+
+                                    if (indexEncontrado != -1) {
+                                        int totalActual = unidadesProductos.get(indexEncontrado);
+                                        unidadesProductos.set(indexEncontrado, totalActual + cantidad);
+                                    } else {
+                                        nombresProductos.add(nombreProd);
+                                        unidadesProductos.add(cantidad);
+                                    }
+
+                                    if (producto instanceof PlatoFuerte) {
+                                        ingresosPlatoFuerte += subtotalProducto;
+                                    } else if (producto instanceof Bebida) {
+                                        ingresosBebida += subtotalProducto;
+                                    } else if (producto instanceof Postre) {
+                                        ingresosPostre += subtotalProducto;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!hayPedidosProcesados) {
+                        System.out.println(" No hay pedidos válidos registrados para generar el reporte.");
+                        break;
+                    }
+
+                    String productoMasVendido = "Ninguno";
+                    int maxUnidades = 0;
+                    int i = 0;
+                    for (String nombre : nombresProductos) {
+                        int unidades = unidadesProductos.get(i);
+                        if (unidades > maxUnidades) {
+                            maxUnidades = unidades;
+                            productoMasVendido = nombre;
+                        }
+                        i++;
+                    }
+
+                    String categoriaMayorIngresos = "Plato Fuerte";
+                    double maxIngresosCat = ingresosPlatoFuerte;
+
+                    if (ingresosBebida > maxIngresosCat) {
+                        maxIngresosCat = ingresosBebida;
+                        categoriaMayorIngresos = "Bebida";
+                    }
+                    if (ingresosPostre > maxIngresosCat) {
+                        maxIngresosCat = ingresosPostre;
+                        categoriaMayorIngresos = "Postre";
+                    }
+
+                    System.out.println("\n========================================");
+                    System.out.println("          INFORME FINANCIERO            ");
+                    System.out.println("========================================");
+                    System.out.println("Ingresos totales del restaurante: $" + ingresosTotalesRestaurante);
+                    System.out.println("Producto más vendido: " + productoMasVendido + " (" + maxUnidades + " unidades)");
+                    System.out.println("Categoría con mayores ingresos: " + categoriaMayorIngresos + " ($" + maxIngresosCat + ")");
+                    System.out.println("----------------------------------------");
+                    System.out.println("Desglose por categoría:");
+                    System.out.println(" - Plato Fuerte: $" + ingresosPlatoFuerte);
+                    System.out.println(" - Bebida: $" + ingresosBebida);
+                    System.out.println(" - Postre: $" + ingresosPostre);
+                    System.out.println("========================================");
+
                     break;
-
-
-
+                }
             }
 
         }while (opcion != 0);

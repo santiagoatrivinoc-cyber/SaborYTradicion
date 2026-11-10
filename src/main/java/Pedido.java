@@ -124,4 +124,22 @@ public class Pedido {
                 "\ncostoDomicilio: " + costoDomicilio +
                 "\nvalor total: $" + calcularValorTotal();
     }
+
+    //método para marcar como entregado
+    public boolean marcarComoEntregado() {
+        if (estadoEntrega == EstadoEntrega.CONFIRMADO) {
+            estadoEntrega = EstadoEntrega.ENTREGADO;
+            return true;
+        }
+        return false;
+    }
+
+//método para cancelar
+    public boolean cancelar() {
+        if (estadoEntrega == EstadoEntrega.PENDIENTE || estadoEntrega == EstadoEntrega.CONFIRMADO) {
+            estadoEntrega = EstadoEntrega.CANCELADO;
+            return true;
+        }
+        return false;
+    }
 }
