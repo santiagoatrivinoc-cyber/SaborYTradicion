@@ -2,8 +2,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
-
+;
 public class Aplicacion {
+    private static Pedido pedidoActual = null;
+
+
     public static void main(String[] args){
 
         Restaurante restaurante = new Restaurante("Sabor & Tradicion", "900123456-7", "Carrera 14 # 20-35, Armenia, Quindío");
@@ -229,57 +232,64 @@ public class Aplicacion {
                     break;
                 }
                 case 6: {
-                    //Registrar pedidos de clientes, permitiendo seleccionar varios productos y sus
+                    // Registrar pedidos de clientes, permitiendo seleccionar varios productos y sus
                     // respectivas cantidades, sin confirmar todavía la compra.
                     System.out.println("--- Registrar Pedidos ---");
+                    sc.nextLine();
 
                     System.out.println("Por favor, ingresa tu numero de documento de identidad: ");
                     String documento = sc.nextLine();
 
                     Cliente cliente = restaurante.buscarCliente(documento);
-                    if (cliente == null) {
+                    if (cliente == null){
+                        System.out.println("Cliente no encontrado.");
                         break;
                     }
 
-                    System.out.println("¿Que deseas pedir?(Ingresa el codigo de lo que desees)");
+                    System.out.println("¿Que deseas pedir? (Ingresa el codigo de lo que desees)");
                     restaurante.consultarProductosDisponibles();
                     String codigo = sc.nextLine();
 
                     Producto producto = restaurante.buscarProducto(codigo);
-                    if (producto == null) {
+                    if (producto == null){
+                        System.out.println("Producto no encontrado.");
                         break;
                     }
 
                     System.out.println("¿Cuantos " + producto.getNombre() + " deseas?");
                     int cantidadProductos = sc.nextInt();
+                    sc.nextLine();
+
                     if (cantidadProductos < 1) {
                         System.out.println("La cantidad de productos debe ser como minimo 1");
                         break;
                     }
 
+
                     DetallePedido detallePedido = new DetallePedido(producto, cantidadProductos);
+
                     String codigoPedido = "";
                     boolean codigoPedidoValido = false;
                     do {
-                        System.out.println("Ingresa el codigo del pedido:");
+                        System.out.println("Ingresa el codigo del pedido (8 caracteres):");
                         codigoPedido = sc.nextLine();
-                        if (codigoPedido.length() != 8) {
+                        if (codigoPedido.length() != 8){
                             System.out.println("El codigo debe de ser de 8 caracteres exactos");
                             continue;
                         }
                         codigoPedidoValido = cliente.verificarPedido(codigoPedido);
-                        if (!codigoPedidoValido) {
+                        if(!codigoPedidoValido){
                             System.out.println("El codigo que ingresaste ya existe, ingresa un codigo diferente");
                         }
-                    } while (!codigoPedidoValido);
-
+                    } while(!codigoPedidoValido);
 
                     ModalidadEntrega modalidadEntrega = null;
-                    System.out.println("Cual es la modalidad de entrega:" +
-                            "\n1. Para consumo en el restaurante" +
-                            "\n2. Para envio a domicilio");
-                    int opcionEntrega = sc.nextInt();
-                    while (opcionEntrega < 1 && opcionEntrega > 2) {
+                    int opcionEntrega = 0;
+                    while(opcionEntrega < 1 || opcionEntrega > 2) {
+                        System.out.println("Cual es la modalidad de entrega:\n1. Para consumo en el restaurante\n2. Para envio a domicilio");
+                        opcionEntrega = sc.nextInt();
+                        sc.nextLine();
+
                         switch (opcionEntrega) {
                             case 1: {
                                 modalidadEntrega = ModalidadEntrega.CONSUMO_RESTAURANTE;
@@ -291,20 +301,52 @@ public class Aplicacion {
                             }
                             default: {
                                 System.out.println("La opcion que elegiste no existe, ingresa una opcion disponible:");
-                                opcionEntrega = sc.nextInt();
                             }
                         }
                     }
 
-                    Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, EstadoEntrega.PENDIENTE, cliente, rapidoExpress);
+                    ServicioDomicilio servicioDomicilio = null;
+                    if(modalidadEntrega == ModalidadEntrega.DOMICILIO){
+                        int opcionDomicilio = 0;
+                        while(opcionDomicilio < 1 || opcionDomicilio > 2){
+                            System.out.println("Elige una empresa para el domicilio:\n1. Entrega Segura\n2. Rapido Express");
+                            opcionDomicilio = sc.nextInt();
+                            sc.nextLine();
 
+                            switch (opcionDomicilio) {
+                                case 1: {
+                                    servicioDomicilio = entregaSegura;
+                                }
+                                case 2: {
+                                    servicioDomicilio = rapidoExpress;
+                                    break;
+                                }
+                                default: {
+                                    System.out.println("La opcion que elegiste no existe, ingresa una opcion disponible:");
+                                }
+                            }
+                        }
+                    }
+
+
+                    Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, EstadoEntrega.PENDIENTE, cliente, servicioDomicilio);
+
+
+                    pedido.agregarProducto(producto, cantidadProductos);
+
+
+                    pedidoActual = pedido;
+
+                    cliente.registrarPedido(pedido);
+                    restaurante.registrarPedido(pedido);
+                    System.out.println("El pedido ha sido registrado correctamente.");
 
                     break;
                 }
                 case 7: {
-                    // Verificamos si ya hay un pedido activo creado en otro caso
+
                     if (pedidoActual == null) {
-                        System.out.println("❌ No hay ningún pedido activo. Debe crear un pedido primero en el menú correspondiente.");
+                        System.out.println("No hay ningún pedido activo. Debe crear un pedido primero en el menú correspondiente.");
                         break;
                     }
 
@@ -314,7 +356,7 @@ public class Aplicacion {
 
                     ServicioDomicilio rapido = new RapidoExpress();
                     ServicioDomicilio segura = new EntregaSegura();
-                    System.out.println("\nCotizaciones disponibles para " + distancia + " km:");
+                    System.out.println("Cotizaciones disponibles para " + distancia + " km:");
 
                     boolean rapidoAcepta = rapido.aceptarRecorrido(distancia);
                     boolean seguraAcepta = segura.aceptarRecorrido(distancia);
@@ -332,7 +374,7 @@ public class Aplicacion {
                     }
 
                     if (!rapidoAcepta && !seguraAcepta) {
-                        System.out.println("\n❌ Error: Ninguna empresa de domicilio acepta recorridos para la distancia ingresada.");
+                        System.out.println("\n Error: Ninguna empresa de domicilio acepta recorridos para la distancia ingresada.");
                         break;
                     }
 
@@ -342,13 +384,13 @@ public class Aplicacion {
                     if (eleccion == 1 && rapidoAcepta) {
                         pedidoActual.setEmpresaTransporte(rapido);
                         pedidoActual.setCostoDomicilio(rapido.calcularCostoEnvio(distancia));
-                        System.out.println("✅ Se asignó " + rapido.getNombreEmpresa() + " al pedido.");
+                        System.out.println("Se asignó " + rapido.getNombreEmpresa() + " al pedido.");
                     } else if (eleccion == 2 && seguraAcepta) {
                         pedidoActual.setEmpresaTransporte(segura);
                         pedidoActual.setCostoDomicilio(segura.calcularCostoEnvio(distancia));
-                        System.out.println("✅ Se asignó " + segura.getNombreEmpresa() + " al pedido.");
+                        System.out.println("Se asigno " + segura.getNombreEmpresa() + " al pedido.");
                     } else {
-                        System.out.println("❌ Selección inválida o la empresa seleccionada no acepta el servicio.");
+                        System.out.println("Selección inválida o la empresa seleccionada no acepta el servicio.");
                     }
 
                     break;
@@ -363,6 +405,13 @@ public class Aplicacion {
                 case 9: {
                     //Calcular el valor total de un pedido, considerando los productos
                     // solicitados y el costo del domicilio cuando corresponda.
+                    System.out.println("--- Calcular Valor Total de un Pedido ---");
+
+                    System.out.println("Ingresa el codigo del pedido: ");
+                    String codigoPedido = sc.nextLine();
+
+                    Pedido pedido = restaurante.buscarPedido(codigoPedido);
+
                 }
                     break;
                 case 10: {

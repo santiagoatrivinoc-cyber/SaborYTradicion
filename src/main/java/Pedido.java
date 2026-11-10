@@ -24,6 +24,7 @@ public class Pedido {
         this.listaDetallesPedidos = new ArrayList<>();
     }
 
+
     public String getCodigo() {
         return codigo;
     }
@@ -69,6 +70,7 @@ public class Pedido {
     public ServicioDomicilio getEmpresaTransporte() {
         return empresaTransporte;
     }
+
     public void setEmpresaTransporte(ServicioDomicilio empresaTransporte) {
         this.empresaTransporte = empresaTransporte;
     }
@@ -87,11 +89,11 @@ public class Pedido {
                 detalle.setCantidad(detalle.getCantidad() + cantidad);
                 return;
             }
+
         }
         this.listaDetallesPedidos.add(new DetallePedido(producto, cantidad));
     }
 
-    // Suma los subtotales de cada detalle del pedido
     public double calcularValorProductos(){
         double totalProductos = 0;
         for (DetallePedido detalle : listaDetallesPedidos) {
@@ -100,7 +102,6 @@ public class Pedido {
         return totalProductos;
     }
 
-    // Suma el valor de los productos más el costo del domicilio (si aplica)
     public double calcularValorTotal(){
         return calcularValorProductos() + costoDomicilio;
     }
