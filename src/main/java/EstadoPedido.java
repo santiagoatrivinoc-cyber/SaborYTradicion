@@ -1,6 +1,6 @@
 public enum EstadoPedido {
-    PENDENTE,
+    PENDIENTE,
     CONFIRMADO,
-    ENTEGADO,
+    ENTREGADO,
     CANCELADO;
 }
