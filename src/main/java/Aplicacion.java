@@ -321,6 +321,7 @@ public class Aplicacion {
 
                     Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, EstadoEntrega.PENDIENTE, cliente, servicioDomicilio);
                     cliente.registrarPedido(pedido);
+                    restaurante.registrarPedido(pedido);
                     System.out.println("El pedido ha sido registrado correctamente");
 
                     break;
@@ -339,6 +340,13 @@ public class Aplicacion {
                 case 9: {
                     //Calcular el valor total de un pedido, considerando los productos
                     // solicitados y el costo del domicilio cuando corresponda.
+                    System.out.println("--- Calcular Valor Total de un Pedido ---");
+
+                    System.out.println("Ingresa el codigo del pedido: ");
+                    String codigoPedido = sc.nextLine();
+
+                    Pedido pedido = restaurante.buscarPedido(codigoPedido);
+
                 }
                     break;
                 case 10: {
