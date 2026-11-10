@@ -37,7 +37,6 @@ class RestauranteTest {
     @Test
     void confirmarPedidoConProductoRechazado() {
         Pedido pedido = new Pedido("PED00001", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
-        pedido.setEstadoPedido(EstadoPedido.PENDIENTE);
         pedido.agregarProducto(productoInvalido, 2); // Bebida no cumple control de calidad
 
         boolean resultado = restaurante.confirmarPedido(pedido, 0);
@@ -50,7 +49,6 @@ class RestauranteTest {
     @Test
     void confirmarPedidoConDomicilioExitoso(){
         Pedido pedido = new Pedido("PED00002", LocalDateTime.now(), ModalidadEntrega.DOMICILIO, cliente, rapidoExpress);
-        pedido.setEstadoPedido(EstadoPedido.PENDIENTE);
         pedido.agregarProducto(productoValido, 2); // 2 * $9.600 = $19.200
         double distancia = 5;
         boolean resultado = restaurante.confirmarPedidoDomicilio(pedido, distancia, rapidoExpress);
@@ -67,13 +65,11 @@ class RestauranteTest {
         // Pedido 1 Confirmado: 2 platos ($19.200) + Domicilio ($12.500)
         Pedido pedido1 = new Pedido("PED00003", LocalDateTime.now(), ModalidadEntrega.DOMICILIO, cliente, rapidoExpress);
         pedido1.calcularCostoDomicilio(5);
-        pedido1.setEstadoPedido(EstadoPedido.PENDIENTE);
         pedido1.agregarProducto(productoValido, 2);
         restaurante.confirmarPedidoDomicilio(pedido1, 5, rapidoExpress);
 
         // Pedido 2 Confirmado y Cancelado
         Pedido pedido2 = new Pedido("PED00004", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
-        pedido2.setEstadoPedido(EstadoPedido.PENDIENTE);
         pedido2.agregarProducto(productoValido, 1);
         restaurante.confirmarPedido(pedido2, 0);
         pedido2.cancelarPedido(); // Estado: CANCELADO
