@@ -18,6 +18,7 @@ public class Pedido {
         this.fecha = fecha;
         this.modalidadEntrega = modalidadEntrega;
         this.costoDomicilio = 0;
+        this.estadoPedido = EstadoPedido.PENDIENTE;
         this.cliente = cliente;
         this.empresaTransporte = empresaTransporte;
         this.listaDetallesPedidos = new ArrayList<>();
