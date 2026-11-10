@@ -646,7 +646,6 @@ public class Aplicacion {
                         categoriaMayorIngresos = "Postre";
                     }
 
-                    // Mostrar el reporte en consola
                     System.out.println("\n========================================");
                     System.out.println("          INFORME FINANCIERO            ");
                     System.out.println("========================================");
