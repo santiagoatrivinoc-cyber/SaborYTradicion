@@ -34,14 +34,71 @@ class RestauranteTest {
 
     @Test
     void confirmarPedidoConProductoRechazado() {
-        Pedido pedido = new Pedido("PED00001", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, rapidoExpress);
+        Pedido pedido = new Pedido("PED00001", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
+        pedido.setEstadoPedido(EstadoPedido.PENDIENTE);
         pedido.agregarProducto(productoInvalido, 2); // Bebida no cumple control de calidad
 
-        boolean resultado =
+        boolean resultado = restaurante.confirmarPedido(pedido, 0);
 
         assertFalse(resultado, "El pedido no debe confirmarse si contiene productos que no cumplen calidad.");
-        assertEquals(EstadoPedido.PENDIENTE, pedido.getEstado());
-        assertEquals(0, restaurante.getPedidos().size());
+        assertEquals(EstadoPedido.PENDIENTE, pedido.getEstadoPedido());
+        assertEquals(0, restaurante.getListaPedidos().size());
+    }
+
+    @Test
+    void confirmarPedidoConDomicilioExitoso(){
+        Pedido pedido = new Pedido("PED00002", LocalDateTime.now(), ModalidadEntrega.DOMICILIO, cliente, rapidoExpress);
+        pedido.agregarProducto(productoValido, 2); // 2 * $9.600 = $19.200
+
+        double distancia = 5.0;
+        boolean resultado = restaurante.confirmarPedidoDomicilio(pedido, distancia, rapidoExpress);
+
+        assertTrue(resultado, "El pedido a domicilio con datos válidos debe confirmarse.");
+        assertEquals(EstadoPedido.CONFIRMADO, pedido.getEstadoPedido());
+        assertEquals(12500.0, pedido.getCostoDomicilio(), 0.001);
+
+        assertTrue(restaurante.getListaPedidos().contains(pedido));
+        assertTrue(cliente.getListaPedidos().contains(pedido));
+    }
+
+    @Test
+    void calculoIngresosTotalesRestaurante() {
+        // Pedido 1 Confirmado: 2 platos ($19.200) + Domicilio ($12.500)
+        Pedido pedido1 = new Pedido("PED00003", LocalDateTime.now(), ModalidadEntrega.DOMICILIO, cliente, rapidoExpress);
+        pedido1.agregarProducto(productoValido, 2);
+        restaurante.confirmarPedidoDomicilio(pedido1, 5.0, rapidoExpress);
+
+        // Pedido 2 Confirmado y Cancelado
+        Pedido pedido2 = new Pedido("PED00004", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
+        pedido2.agregarProducto(productoValido, 1);
+        restaurante.confirmarPedido(pedido2, 0);
+        pedido2.cancelarPedido(); // Estado: CANCELADO
+
+        // Ingresos propios deben ser solo $19.200 (excluye $12.500 de domicilio y el pedido cancelado)
+        double ingresosRestaurante = restaurante.calcularIngresosTotales();
+        double ingresosDomicilios = restaurante.calcularIngresosTotalesDomicilios();
+
+        assertEquals(19200.0, ingresosRestaurante);
+        assertEquals(12500.0, ingresosDomicilios);
+    }
+
+    void testObtenerCategoriaConMayoresIngresos() {
+        // Postre Aprobado (5000 + 15% = $5.750)
+        Postre postreValido = new Postre("PO01", "Tres Leches", "Postre", 5000, 15, restaurante, 200, 4.0, true); // Refrigerado (+5% base = +$250) -> $6.000
+        restaurante.registrarProducto(postreValido);
+
+        // Pedido A: 1 Plato Fuerte ($9.600)
+        Pedido p1 = new Pedido("PED00005", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
+        p1.agregarProducto(productoValido, 1);
+        restaurante.confirmarPedido(p1, 0);
+
+        // Pedido B: 3 Postres (3 * $6.000 = $18.000)
+        Pedido p2 = new Pedido("PED00006", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
+        p2.agregarProducto(postreValido, 3);
+        restaurante.confirmarPedido(p2, 0);
+
+        String categoriaLider = restaurante.obtenerCategoriaConMayoresIngresos();
+        assertEquals("Postres", categoriaLider);
     }
 
 }

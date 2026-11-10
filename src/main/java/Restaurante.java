@@ -204,48 +204,130 @@ public class Restaurante {
 
         return true;
     }
-    public double confirmarPedido(Pedido pedido, double distanciaKm) {
+    public boolean confirmarPedido(Pedido pedido, double distanciaKm) {
         if (!validarRequisitosPedido(pedido, distanciaKm, null)) {
-            return -1.0;
+            return false;
         }
         if (pedido.getEstadoPedido() != EstadoPedido.PENDIENTE) {
-            return -1.0;
+            return false;
         }
         if (verificarPedido(pedido.getCodigo())) {
-            return -1.0;
+            return false;
         }
         pedido.setEstadoPedido(EstadoPedido.CONFIRMADO);
-        pedido.setCostoDomicilio(0.0);
         pedido.setEmpresaTransporte(null);
 
         this.listaPedidos.add(pedido);
         pedido.getCliente().registrarPedido(pedido);
 
-        return pedido.calcularValorTotal();
+        return true;
     }
 
-    public double confirmarPedidoDomicilio(Pedido pedido, double distanciaKm, ServicioDomicilio empresa) {
+    public boolean confirmarPedidoDomicilio(Pedido pedido, double distanciaKm, ServicioDomicilio empresa) {
 
         if (!validarRequisitosPedido(pedido, distanciaKm, empresa)) {
-            return -1.0;
+            return false;
         }
         if (pedido.getEstadoPedido() != EstadoPedido.PENDIENTE) {
-            return -1.0;
+            return false;
         }
         if (buscarPedido(pedido.getCodigo()) != null) {
-            return -1.0;
+            return false;
         }
-        double costoEnvio = empresa.calcularCostoEnvio(distanciaKm);
-        pedido.setCostoDomicilio(costoEnvio);
         pedido.setEmpresaTransporte(empresa);
         pedido.setEstadoPedido(EstadoPedido.CONFIRMADO);
 
         this.listaPedidos.add(pedido);
         pedido.getCliente().registrarPedido(pedido);
 
-        return pedido.calcularValorTotal();
+        return true;
     }
 
+    public double calcularIngresosTotales() {
+        double ingresosProductos = 0.0;
+
+        for (Pedido pedido : listaPedidos) {
+            if (pedido.getEstadoPedido() == EstadoPedido.CONFIRMADO || pedido.getEstadoPedido() == EstadoPedido.ENTREGADO) {
+                ingresosProductos += pedido.calcularValorProductos();
+            }
+        }
+
+        return ingresosProductos;
+    }
+
+    public double calcularIngresosTotalesDomicilios() {
+        double ingresosDomicilios = 0.0;
+
+        for (Pedido pedido : listaPedidos) {
+            if (pedido.getModalidadEntrega() == ModalidadEntrega.DOMICILIO &&
+                    (pedido.getEstadoPedido() == EstadoPedido.CONFIRMADO || pedido.getEstadoPedido() == EstadoPedido.ENTREGADO)) {
+
+                ingresosDomicilios += pedido.getCostoDomicilio();
+            }
+        }
+
+        return ingresosDomicilios;
+    }
+
+    public Producto consultarProductoMasVendido() {
+        Producto masVendido = null;
+        int maxCantidad = 0;
+
+        for (Producto producto : this.menu) {
+            int cantidadTotalProducto = 0;
+
+            for (Pedido pedido : listaPedidos) {
+                if (pedido.getEstadoPedido() == EstadoPedido.CONFIRMADO || pedido.getEstadoPedido() == EstadoPedido.ENTREGADO) {
+                    for (DetallePedido detalle : pedido.getListaDetallesPedidos()) {
+                        if (detalle.getProducto().getCodigo().equals(producto.getCodigo())) {
+                            cantidadTotalProducto += detalle.getCantidad();
+                        }
+                    }
+                }
+            }
+
+            if (cantidadTotalProducto > maxCantidad) {
+                maxCantidad = cantidadTotalProducto;
+                masVendido = producto;
+            }
+        }
+
+        return masVendido;
+    }
+
+    public String consultarCategoriaProductoMayorIngreso() {
+        double ingresosPlatos = 0.0;
+        double ingresosBebidas = 0.0;
+        double ingresosPostres = 0.0;
+
+        for (Pedido pedido : listaPedidos) {
+            if (pedido.getEstadoPedido() == EstadoPedido.CONFIRMADO || pedido.getEstadoPedido() == EstadoPedido.ENTREGADO) {
+                for (DetallePedido detalle : pedido.getListaDetallesPedidos()) {
+                    Producto prod = detalle.getProducto();
+                    double subtotal = detalle.calcularSubtotal();
+
+                    if (prod instanceof PlatoFuerte) {
+                        ingresosPlatos += subtotal;
+                    } else if (prod instanceof Bebida) {
+                        ingresosBebidas += subtotal;
+                    } else if (prod instanceof Postre) {
+                        ingresosPostres += subtotal;
+                    }
+                }
+            }
+        }
+
+        if (ingresosPlatos == 0.0 && ingresosBebidas == 0.0 && ingresosPostres == 0.0) {
+            return "Sin ventas registradas";
+        }
+        if (ingresosPlatos >= ingresosBebidas && ingresosPlatos >= ingresosPostres) {
+            return "Platos Fuertes";
+        } else if (ingresosBebidas >= ingresosPostres) {
+            return "Bebidas";
+        } else {
+            return "Postres";
+        }
+    }
 
 
 

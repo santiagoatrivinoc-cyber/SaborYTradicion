@@ -524,7 +524,7 @@ public class Aplicacion {
                             }
                             break;
                         case 2:
-                            if (pedidoBuscado.cancelar()) {
+                            if (pedidoBuscado.cancelarPedido()) {
                                 System.out.println("Pedido cancelado.");
                             } else {
                                 System.out.println("No se puede cancelar: el pedido ya fue entregado o cancelado.");

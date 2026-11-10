@@ -134,7 +134,7 @@ public class Pedido {
     }
 
 //método para cancelar
-    public boolean cancelar() {
+    public boolean cancelarPedido() {
         if (estadoPedido == EstadoPedido.PENDIENTE || estadoPedido == EstadoPedido.CONFIRMADO) {
             estadoPedido = EstadoPedido.CANCELADO;
             return true;
