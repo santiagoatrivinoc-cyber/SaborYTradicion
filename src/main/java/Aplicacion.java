@@ -1,6 +1,8 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 ;
 public class Aplicacion {
@@ -547,14 +549,119 @@ public class Aplicacion {
                 }
                     break;
                 case 13: {
-                    //Generar reportes de ventas, calculando los ingresos del restaurante, identificando
-                    // el producto con mayor cantidad de unidades vendidas y la categoría que genera
-                    // mayores ingresos, sin incluir los valores cobrados por los domicilios.
-                }
+                    System.out.println("--- REPORTE DE VENTAS ---");
+
+                    List<Pedido> pedidos = restaurante.getListaPedidos();
+
+                    if (pedidos == null) {
+                        System.out.println("No hay pedidos registrados para generar el reporte.");
+                        break;
+                    }
+
+                    double ingresosTotalesRestaurante = 0.0;
+
+                    double ingresosPlatoFuerte = 0.0;
+                    double ingresosBebida = 0.0;
+                    double ingresosPostre = 0.0;
+
+                    List<String> nombresProductos = new ArrayList<>();
+                    List<Integer> unidadesProductos = new ArrayList<>();
+
+                    boolean hayPedidosProcesados = false;
+
+                    for (Pedido pedido : pedidos) {
+                        if (pedido == null || pedido.getEstadoEntrega() == EstadoEntrega.CANCELADO) {
+                            continue;
+                        }
+
+                        List<DetallePedido> detalles = pedido.getListaDetallesPedidos();
+                        if (detalles != null) {
+                            for (DetallePedido detalle : detalles) {
+                                if (detalle != null) {
+                                    hayPedidosProcesados = true;
+                                    Producto producto = detalle.getProducto();
+                                    int cantidad = detalle.getCantidad();
+                                    double subtotalProducto = detalle.calcularSubtotal();
+
+                                    ingresosTotalesRestaurante += subtotalProducto;
+
+                                    String nombreProd = producto.getNombre();
+                                    int indexEncontrado = -1;
+                                    int k = 0;
+
+                                    for (String nombreExistente : nombresProductos) {
+                                        if (nombreExistente.equals(nombreProd)) {
+                                            indexEncontrado = k;
+                                            break;
+                                        }
+                                        k++;
+                                    }
+
+                                    if (indexEncontrado != -1) {
+                                        int totalActual = unidadesProductos.get(indexEncontrado);
+                                        unidadesProductos.set(indexEncontrado, totalActual + cantidad);
+                                    } else {
+                                        nombresProductos.add(nombreProd);
+                                        unidadesProductos.add(cantidad);
+                                    }
+
+                                    if (producto instanceof PlatoFuerte) {
+                                        ingresosPlatoFuerte += subtotalProducto;
+                                    } else if (producto instanceof Bebida) {
+                                        ingresosBebida += subtotalProducto;
+                                    } else if (producto instanceof Postre) {
+                                        ingresosPostre += subtotalProducto;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!hayPedidosProcesados) {
+                        System.out.println(" No hay pedidos válidos registrados para generar el reporte.");
+                        break;
+                    }
+
+                    String productoMasVendido = "Ninguno";
+                    int maxUnidades = 0;
+                    int i = 0;
+                    for (String nombre : nombresProductos) {
+                        int unidades = unidadesProductos.get(i);
+                        if (unidades > maxUnidades) {
+                            maxUnidades = unidades;
+                            productoMasVendido = nombre;
+                        }
+                        i++;
+                    }
+
+                    String categoriaMayorIngresos = "Plato Fuerte";
+                    double maxIngresosCat = ingresosPlatoFuerte;
+
+                    if (ingresosBebida > maxIngresosCat) {
+                        maxIngresosCat = ingresosBebida;
+                        categoriaMayorIngresos = "Bebida";
+                    }
+                    if (ingresosPostre > maxIngresosCat) {
+                        maxIngresosCat = ingresosPostre;
+                        categoriaMayorIngresos = "Postre";
+                    }
+
+                    // Mostrar el reporte en consola
+                    System.out.println("\n========================================");
+                    System.out.println("          INFORME FINANCIERO            ");
+                    System.out.println("========================================");
+                    System.out.println("Ingresos totales del restaurante: $" + ingresosTotalesRestaurante);
+                    System.out.println("Producto más vendido: " + productoMasVendido + " (" + maxUnidades + " unidades)");
+                    System.out.println("Categoría con mayores ingresos: " + categoriaMayorIngresos + " ($" + maxIngresosCat + ")");
+                    System.out.println("----------------------------------------");
+                    System.out.println("Desglose por categoría:");
+                    System.out.println(" - Plato Fuerte: $" + ingresosPlatoFuerte);
+                    System.out.println(" - Bebida: $" + ingresosBebida);
+                    System.out.println(" - Postre: $" + ingresosPostre);
+                    System.out.println("========================================");
+
                     break;
-
-
-
+                }
             }
 
         }while (opcion != 0);
