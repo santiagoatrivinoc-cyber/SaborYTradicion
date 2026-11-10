@@ -237,7 +237,7 @@ public class Aplicacion {
                     System.out.println("--- Registrar Pedidos ---");
                     sc.nextLine();
 
-                    System.out.println("Por favor, ingresa tu numero de documento de identidad: ");
+                    System.out.println("Ingresa el numero de documento de identidad del cliente: ");
                     String documento = sc.nextLine();
 
                     Cliente cliente = restaurante.buscarCliente(documento);
@@ -316,6 +316,7 @@ public class Aplicacion {
                             switch (opcionDomicilio) {
                                 case 1: {
                                     servicioDomicilio = entregaSegura;
+                                    break;
                                 }
                                 case 2: {
                                     servicioDomicilio = rapidoExpress;
@@ -332,13 +333,8 @@ public class Aplicacion {
                     Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, EstadoEntrega.PENDIENTE, cliente, servicioDomicilio);
 
 
-                    pedido.agregarProducto(producto, cantidadProductos);
-
 
                     pedidoActual = pedido;
-
-                    cliente.registrarPedido(pedido);
-                    restaurante.registrarPedido(pedido);
                     System.out.println("El pedido ha sido registrado correctamente.");
 
                     break;
@@ -411,6 +407,10 @@ public class Aplicacion {
                     String codigoPedido = sc.nextLine();
 
                     Pedido pedido = restaurante.buscarPedido(codigoPedido);
+                    if (pedido == null){
+                        System.out.println("Este pedido no existe");
+                        break;
+                    }
                     double valorTotal = pedido.calcularValorTotal();
                     System.out.println("El valor total de este pedido es de: " + valorTotal);
                 }
