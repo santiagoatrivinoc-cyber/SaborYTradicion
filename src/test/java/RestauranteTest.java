@@ -84,16 +84,13 @@ class RestauranteTest {
 
     @Test
     void testObtenerCategoriaConMayoresIngresos() {
-        // Postre Aprobado (5000 + 15% = $5.750)
         Postre postreValido = new Postre("PO01", "Tres Leches", "Postre", 5000, 15, restaurante, 200, 4.0, true); // Refrigerado (+5% base = +$250) -> $6.000
         restaurante.registrarProducto(postreValido);
 
-        // Pedido A: 1 Plato Fuerte ($9.600)
         Pedido p1 = new Pedido("PED00005", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
         p1.agregarProducto(productoValido, 1);
         restaurante.confirmarPedido(p1, 0);
 
-        // Pedido B: 3 Postres (3 * $6.000 = $18.000)
         Pedido p2 = new Pedido("PED00006", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
         p2.agregarProducto(postreValido, 3);
         restaurante.confirmarPedido(p2, 0);
