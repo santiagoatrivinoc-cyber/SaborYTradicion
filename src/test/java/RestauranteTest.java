@@ -83,7 +83,7 @@ class RestauranteTest {
     }
 
     @Test
-    void testObtenerCategoriaConMayoresIngresos() {
+    void obtenerCategoriaConMayoresIngresos() {
         Postre postreValido = new Postre("PO01", "Tres Leches", "Postre", 5000, 15, restaurante, 200, 4.0, true); // Refrigerado (+5% base = +$250) -> $6.000
         restaurante.registrarProducto(postreValido);
 
