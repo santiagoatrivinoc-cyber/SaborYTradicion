@@ -215,7 +215,7 @@ public class Aplicacion {
                         if (cumple) {
                             System.out.println("[APROBADO] " + producto.getNombre() + " (" + producto.getCodigo() + ") cumple con las condiciones de calidad.");
                         } else {
-                            System.out.println("[RECHAZADO] " + producto.getNombre() + " (" + producto.getCodigo() + ") NO cumple con las condiciones de calidad.");
+                            System.out.println("[RECHAZADO] " + producto.getNombre() + " (" + producto.getCodigo() + ") NO cumple con las condiciones de calidad, se debe eliminar.");
                             hayIncumplidos = true;
                         }
                     }
@@ -400,8 +400,71 @@ public class Aplicacion {
                     //Confirmar pedidos, verificando que el cliente esté registrado, los productos
                     // pertenezcan al menú, las cantidades sean válidas y todos los productos cumplan
                     // las condiciones de calidad. Para los domicilios, también se debe verificar la aceptación del servicio.
+
+                        System.out.println("--- Confirmar Pedidos ---");
+
+                        if (pedidoActual == null) {
+                            System.out.println(" No hay ningún pedido activo registrado para confirmar.");
+                            break;
+                        }
+
+                        if (pedidoActual.getCliente() == null) {
+                            System.out.println(" Error: El pedido no tiene un cliente asociado válido.");
+                            break;
+                        }
+
+                        if (pedidoActual.getListaDetallesPedidos().isEmpty()) {
+                            System.out.println("Error: El pedido no contiene productos.");
+                            break;
+                        }
+
+                        boolean todoValido = true;
+
+                        for (DetallePedido detalle : pedidoActual.getListaDetallesPedidos()) {
+                            Producto producto = detalle.getProducto();
+
+                            if (detalle.getCantidad() < 1) {
+                                System.out.println("Error: La cantidad para el producto " + producto.getNombre() + " no es válida.");
+                                todoValido = false;
+                                break;
+                            }
+
+                            boolean perteneceAlMenu = restaurante.getMenu().contains(producto);
+                            if (!perteneceAlMenu) {
+                                System.out.println(" Error: El producto " + producto.getNombre() + " ya no pertenece al menú del restaurante.");
+                                todoValido = false;
+                                break;
+                            }
+
+                            if (!producto.validarCondicionesCalidad()) {
+                                System.out.println("Error de Calidad: El producto " + producto.getNombre() + " NO cumple con las condiciones de calidad requeridas.");
+                                todoValido = false;
+                                break;
+                            }
+                        }
+
+                        if (!todoValido) {
+                            System.out.println("El pedido NO pudo ser confirmado debido a incumplimientos en las validaciones.");
+                            break;
+                        }
+
+                        if (pedidoActual.getModalidadEntrega() == ModalidadEntrega.DOMICILIO) {
+                            if (pedidoActual.getEmpresaTransporte() == null) {
+                                System.out.println(" Error: El pedido es a domicilio pero no tiene asignada ninguna empresa de transporte.");
+                                System.out.println("Por favor, gestione el domicilio primero en la opción 7.");
+                                break;
+                            }
+
+                            System.out.println(" Empresa de transporte asociada: " + pedidoActual.getEmpresaTransporte().getNombreEmpresa());
+                        }
+
+                        pedidoActual.setEstadoEntrega(EstadoEntrega.CONFIRMADO);
+                        System.out.println("Pedido confirmado con éxito");
+                        System.out.println(pedidoActual.toString());
+
+                        break;
                 }
-                    break;
+
                 case 9: {
                     //Calcular el valor total de un pedido, considerando los productos
                     // solicitados y el costo del domicilio cuando corresponda.
