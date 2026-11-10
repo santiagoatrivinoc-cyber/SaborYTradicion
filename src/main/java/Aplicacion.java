@@ -240,7 +240,7 @@ public class Aplicacion {
                         break;
                     }
 
-                    System.out.println("¿Que deseas pedir?(Ingresa el codigo de lo que desees)");
+                    System.out.println("¿Qué deseas pedir?(Ingresa el codigo de lo que desees)");
                     restaurante.consultarProductosDisponibles();
                     String codigo = sc.nextLine();
 
@@ -249,7 +249,7 @@ public class Aplicacion {
                         break;
                     }
 
-                    System.out.println("¿Cuantos " + producto.getNombre() + " deseas?");
+                    System.out.println("¿Cuántos " + producto.getNombre() + " deseas?");
                     int cantidadProductos = sc.nextInt();
                     if (cantidadProductos < 1) {
                         System.out.println("La cantidad de productos debe ser como minimo 1");
