@@ -105,12 +105,16 @@ public class Pedido {
         return calcularValorProductos() + costoDomicilio;
     }
 
-    public void marcarEntrega(){
-        this.estadoPedido = EstadoPedido.ENTREGADO;
-    }
-
-    public void marcarCancelacion(){
-        this.estadoPedido = EstadoPedido.CANCELADO;
+    public void calcularCostoDomicilio(double distancia){
+        if (modalidadEntrega == ModalidadEntrega.CONSUMO_RESTAURANTE){
+            System.out.println("Este pedido no es un domicilio, no se puede calcular un costo domicilio");
+            return;
+        }
+        if (empresaTransporte == null){
+            System.out.println("No se ha determinado una empresa de transporte, no se puede calcular un costo domicilio");
+            return;
+        }
+        costoDomicilio = empresaTransporte.calcularCostoEnvio(distancia);
     }
 
     @Override

@@ -143,7 +143,7 @@ public class Restaurante {
     }
 
     public boolean registrarPedido(Pedido pedido) {
-        if (verificarCliente(pedido.getCodigo())) {
+        if (verificarPedido(pedido.getCodigo())) {
             return false;
         }
         listaPedidos.add(pedido);
