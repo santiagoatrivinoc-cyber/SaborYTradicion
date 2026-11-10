@@ -2,6 +2,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
+
 public class Aplicacion {
     public static void main(String[] args){
 
@@ -179,8 +180,8 @@ public class Aplicacion {
                     }
 
                     break;
-            }
-                case 3:{
+                }
+                case 3: {
                     //Calcular el precio de venta de los productos, aplicando los incrementos y recargos
                     // correspondientes según sus características.
 
@@ -236,7 +237,7 @@ public class Aplicacion {
                     String documento = sc.nextLine();
 
                     Cliente cliente = restaurante.buscarCliente(documento);
-                    if (cliente == null){
+                    if (cliente == null) {
                         break;
                     }
 
@@ -245,7 +246,7 @@ public class Aplicacion {
                     String codigo = sc.nextLine();
 
                     Producto producto = restaurante.buscarProducto(codigo);
-                    if (producto == null){
+                    if (producto == null) {
                         break;
                     }
 
@@ -256,21 +257,21 @@ public class Aplicacion {
                         break;
                     }
 
-                    DetallePedido detallePedido = new DetallePedido(producto,cantidadProductos);
+                    DetallePedido detallePedido = new DetallePedido(producto, cantidadProductos);
                     String codigoPedido = "";
                     boolean codigoPedidoValido = false;
                     do {
                         System.out.println("Ingresa el codigo del pedido:");
                         codigoPedido = sc.nextLine();
-                        if (codigoPedido.length() != 8){
+                        if (codigoPedido.length() != 8) {
                             System.out.println("El codigo debe de ser de 8 caracteres exactos");
                             continue;
                         }
                         codigoPedidoValido = cliente.verificarPedido(codigoPedido);
-                        if(!codigoPedidoValido){
+                        if (!codigoPedidoValido) {
                             System.out.println("El codigo que ingresaste ya existe, ingresa un codigo diferente");
                         }
-                    } while(!codigoPedidoValido);
+                    } while (!codigoPedidoValido);
 
 
                     ModalidadEntrega modalidadEntrega = null;
@@ -278,7 +279,7 @@ public class Aplicacion {
                             "\n1. Para consumo en el restaurante" +
                             "\n2. Para envio a domicilio");
                     int opcionEntrega = sc.nextInt();
-                    while(opcionEntrega < 1 && opcionEntrega > 2) {
+                    while (opcionEntrega < 1 && opcionEntrega > 2) {
                         switch (opcionEntrega) {
                             case 1: {
                                 modalidadEntrega = ModalidadEntrega.CONSUMO_RESTAURANTE;
@@ -298,22 +299,61 @@ public class Aplicacion {
                     Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, EstadoEntrega.PENDIENTE, cliente, rapidoExpress);
 
 
-
-
-
-
-
-
-
-
-
                     break;
                 }
                 case 7: {
-                    //Gestionar servicios de domicilio, seleccionando RápidoExpress o EntregaSegura,
-                    // verificando la distancia permitida y calculando el costo correspondiente.
-                }
+                    // Verificamos si ya hay un pedido activo creado en otro caso
+                    if (pedidoActual == null) {
+                        System.out.println("❌ No hay ningún pedido activo. Debe crear un pedido primero en el menú correspondiente.");
+                        break;
+                    }
+
+                    System.out.println("\n--- GESTIÓN DE DOMICILIO ---");
+                    System.out.print("Ingrese la distancia del recorrido en kilómetros (km): ");
+                    double distancia = sc.nextDouble();
+
+                    ServicioDomicilio rapido = new RapidoExpress();
+                    ServicioDomicilio segura = new EntregaSegura();
+                    System.out.println("\nCotizaciones disponibles para " + distancia + " km:");
+
+                    boolean rapidoAcepta = rapido.aceptarRecorrido(distancia);
+                    boolean seguraAcepta = segura.aceptarRecorrido(distancia);
+
+                    if (rapidoAcepta) {
+                        System.out.println("1. " + rapido.getNombreEmpresa() + " - Costo: $" + rapido.calcularCostoEnvio(distancia));
+                    } else {
+                        System.out.println("1. " + rapido.getNombreEmpresa() + " - NO disponible (supera el límite de 12 km)");
+                    }
+
+                    if (seguraAcepta) {
+                        System.out.println("2. " + segura.getNombreEmpresa() + " - Costo: $" + segura.calcularCostoEnvio(distancia));
+                    } else {
+                        System.out.println("2. " + segura.getNombreEmpresa() + " - NO disponible (supera el límite de 20 km)");
+                    }
+
+                    if (!rapidoAcepta && !seguraAcepta) {
+                        System.out.println("\n❌ Error: Ninguna empresa de domicilio acepta recorridos para la distancia ingresada.");
+                        break;
+                    }
+
+                    System.out.print("\nSeleccione la empresa de transporte (1 o 2): ");
+                    int eleccion = sc.nextInt();
+
+                    if (eleccion == 1 && rapidoAcepta) {
+                        pedidoActual.setEmpresaTransporte(rapido);
+                        pedidoActual.setCostoDomicilio(rapido.calcularCostoEnvio(distancia));
+                        System.out.println("✅ Se asignó " + rapido.getNombreEmpresa() + " al pedido.");
+                    } else if (eleccion == 2 && seguraAcepta) {
+                        pedidoActual.setEmpresaTransporte(segura);
+                        pedidoActual.setCostoDomicilio(segura.calcularCostoEnvio(distancia));
+                        System.out.println("✅ Se asignó " + segura.getNombreEmpresa() + " al pedido.");
+                    } else {
+                        System.out.println("❌ Selección inválida o la empresa seleccionada no acepta el servicio.");
+                    }
+
                     break;
+                }
+
                 case 8: {
                     //Confirmar pedidos, verificando que el cliente esté registrado, los productos
                     // pertenezcan al menú, las cantidades sean válidas y todos los productos cumplan
