@@ -160,6 +160,12 @@ public class Restaurante {
         return null;
     }
 
+    public void consultarPedidosCliente(){
+        for(Pedido pedido : listaPedidos){
+            System.out.println(pedido.getCodigo() + ": " + pedido.getEstadoEntrega());
+        }
+    }
+
 
 
 

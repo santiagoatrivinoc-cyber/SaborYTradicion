@@ -436,6 +436,11 @@ public class Aplicacion {
                 case 12: {
                     //Consultar el estado de los pedidos, considerando los estados pendiente,
                     // confirmado, entregado y cancelado, respetando las condiciones establecidas.
+                    System.out.println("--- Consultar Estado Pedidos ---");
+                    restaurante.consultarPedidosCliente();
+
+
+
                 }
                     break;
                 case 13: {
