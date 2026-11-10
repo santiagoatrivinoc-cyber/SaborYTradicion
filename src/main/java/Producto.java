@@ -12,6 +12,14 @@ public abstract class Producto {
 
 
     public Producto(String codigo, String nombre, String descripcion, double precioBase, int tiempoPreparacion, Restaurante restaurante) {
+        if (codigo == null || codigo.isBlank()) {
+            throw new IllegalArgumentException("El código no puede estar vacío");
+        }
+        if (precioBase <= 0) {
+            throw new IllegalArgumentException("El precio base debe ser mayor que cero");
+        }
+
+
         this.codigo = codigo;
         this.nombre = nombre;
         this.descripcion = descripcion;
