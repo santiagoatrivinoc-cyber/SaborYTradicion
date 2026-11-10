@@ -98,16 +98,29 @@ class RestauranteTest {
         Postre postreValido = new Postre("PO01", "Tres Leches", "Postre", 5000, 15, restaurante, 200, 4.0, true); // Refrigerado (+5% base = +$250) -> $6.000
         restaurante.registrarProducto(postreValido);
 
-        Pedido p1 = new Pedido("PED00005", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
-        p1.agregarProducto(productoValido, 1);
-        restaurante.confirmarPedido(p1, 0);
+        Bebida bebidaValida = new Bebida("B001", "Chocolisto", "Bebida de chocolate", 6000, 5, restaurante, 500, 10, TipoTemperatura.FRIA, false);
 
-        Pedido p2 = new Pedido("PED00006", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
-        p2.agregarProducto(postreValido, 3);
-        restaurante.confirmarPedido(p2, 0);
+        Pedido pedido1 = new Pedido("PED00005", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
+        pedido1.agregarProducto(productoValido, 1);
+        restaurante.confirmarPedido(pedido1, 0);
+        pedido1.setEstadoPedido(EstadoPedido.CONFIRMADO);
+        restaurante.registrarPedido(pedido1);
+
+        Pedido pedido2 = new Pedido("PED00006", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
+        pedido2.agregarProducto(postreValido, 3);
+        restaurante.confirmarPedido(pedido2, 0);
+        pedido2.setEstadoPedido(EstadoPedido.CONFIRMADO);
+        restaurante.registrarPedido(pedido2);
+
+        Pedido pedido3 = new Pedido("PED00007", LocalDateTime.now(), ModalidadEntrega.CONSUMO_RESTAURANTE, cliente, null);
+        pedido3.agregarProducto(bebidaValida, 6);
+        restaurante.confirmarPedido(pedido3, 0);
+        pedido3.setEstadoPedido(EstadoPedido.CONFIRMADO);
+        restaurante.registrarPedido(pedido3);
 
         String categoriaLider = restaurante.consultarCategoriaProductoMayorIngreso();
-        assertEquals("Postres", categoriaLider);
+        System.out.println(categoriaLider);
+        assertEquals("Bebidas", categoriaLider);
     }
 
 }
