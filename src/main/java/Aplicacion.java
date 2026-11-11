@@ -237,7 +237,6 @@ public class Aplicacion {
                     // Registrar pedidos de clientes, permitiendo seleccionar varios productos y sus
                     // respectivas cantidades, sin confirmar todavía la compra.
                     System.out.println("--- Registrar Pedidos ---");
-                    sc.nextLine();
 
                     System.out.println("Ingresa el numero de documento de identidad del cliente: ");
                     String documento = sc.nextLine();
@@ -280,10 +279,10 @@ public class Aplicacion {
                             continue;
                         }
                         codigoPedidoValido = cliente.verificarPedido(codigoPedido);
-                        if(!codigoPedidoValido){
+                        if(codigoPedidoValido){
                             System.out.println("El codigo que ingresaste ya existe, ingresa un codigo diferente");
                         }
-                    } while(!codigoPedidoValido);
+                    } while(codigoPedidoValido);
 
                     ModalidadEntrega modalidadEntrega = null;
                     int opcionEntrega = 0;
