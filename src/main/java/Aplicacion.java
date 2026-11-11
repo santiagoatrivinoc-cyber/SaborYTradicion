@@ -247,28 +247,6 @@ public class Aplicacion {
                         break;
                     }
 
-                    System.out.println("¿Qué deseas pedir?(Ingresa el codigo de lo que desees)");
-                    restaurante.consultarProductosDisponibles();
-                    String codigo = sc.nextLine();
-
-                    Producto producto = restaurante.buscarProducto(codigo);
-                    if (producto == null){
-                        System.out.println("Producto no encontrado.");
-                        break;
-                    }
-
-                    System.out.println("¿Cuántos " + producto.getNombre() + " deseas?");
-                    int cantidadProductos = sc.nextInt();
-                    sc.nextLine();
-
-                    if (cantidadProductos < 1) {
-                        System.out.println("La cantidad de productos debe ser como minimo 1");
-                        break;
-                    }
-
-
-                    DetallePedido detallePedido = new DetallePedido(producto, cantidadProductos);
-
                     String codigoPedido = "";
                     boolean codigoPedidoExiste = false;
                     do {
@@ -277,7 +255,8 @@ public class Aplicacion {
 
                         if (codigoPedido.length() != 8){
                             System.out.println("El codigo debe de ser de 8 caracteres exactos");
-                            codigoPedidoExiste = true;  continue;
+                            codigoPedidoExiste = true;
+                            continue;
                         }
 
                         codigoPedidoExiste = cliente.verificarPedido(codigoPedido);
@@ -308,11 +287,10 @@ public class Aplicacion {
                             }
                         }
                     }
+
                     Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, cliente, null);
 
-
                     String continuar = "si";
-
                     while (continuar.equalsIgnoreCase("si")) {
                         System.out.println("\n--- Menú Disponible ---");
                         restaurante.consultarProductosDisponibles();
@@ -320,8 +298,7 @@ public class Aplicacion {
                         System.out.println("Ingresa el codigo del producto que deseas agregar:");
                         String codigoProd = sc.nextLine();
 
-
-                        producto = restaurante.buscarProducto(codigoProd);
+                        Producto producto = restaurante.buscarProducto(codigoProd);
 
                         if (producto == null){
                             System.out.println("Producto no encontrado en el menú.");
