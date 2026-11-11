@@ -308,91 +308,107 @@ public class Aplicacion {
                             }
                         }
                     }
+                    Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, cliente, null);
 
-                    ServicioDomicilio servicioDomicilio = null;
-                    if(modalidadEntrega == ModalidadEntrega.DOMICILIO){
-                        int opcionDomicilio = 0;
-                        while(opcionDomicilio < 1 || opcionDomicilio > 2){
-                            System.out.println("Elige una empresa para el domicilio:\n1. Entrega Segura\n2. Rapido Express");
-                            opcionDomicilio = sc.nextInt();
+
+                    String continuar = "si";
+
+                    while (continuar.equalsIgnoreCase("si")) {
+                        System.out.println("\n--- Menú Disponible ---");
+                        restaurante.consultarProductosDisponibles();
+
+                        System.out.println("Ingresa el codigo del producto que deseas agregar:");
+                        String codigoProd = sc.nextLine();
+
+                        Producto productos = restaurante.buscarProducto(codigoProd);
+                        if (productos == null){
+                            System.out.println("Producto no encontrado en el menú.");
+                        } else {
+                            System.out.println("¿Cuántos " + producto.getNombre() + " deseas?");
+                            int cantidadProducto = sc.nextInt();
                             sc.nextLine();
 
-                            switch (opcionDomicilio) {
-                                case 1: {
-                                    servicioDomicilio = entregaSegura;
-                                    break;
-                                }
-                                case 2: {
-                                    servicioDomicilio = rapidoExpress;
-                                    break;
-                                }
-                                default: {
-                                    System.out.println("La opcion que elegiste no existe, ingresa una opcion disponible:");
-                                }
+                            if (cantidadProducto < 1) {
+                                System.out.println("La cantidad debe ser como minimo 1.");
+                            } else {
+                                pedido.agregarProducto(producto, cantidadProductos);
+                                System.out.println("Producto agregado exitosamente.");
+                            }
+                        }
+
+                        System.out.println("¿Deseas agregar otro producto? (si / no):");
+                        continuar = sc.nextLine();
+                    }
+
+                    if (pedido.getListaDetallesPedidos().isEmpty()) {
+                        System.out.println("El pedido no tiene productos. Operación cancelada.");
+                        break;
+                    }
+
+                    cliente.registrarPedido(pedido);
+                    pedidoActual = pedido;
+
+                    System.out.println("\n¡Pedido registrado con éxito! (Si es domicilio, recuerda pasar al Case 7 para asignar transportadora y calcular costo).");
+                    break;
+                }
+
+                case 7: {
+                    System.out.println("--- Gestión y Costo de Domicilio ---");
+
+                    if (pedidoActual == null) {
+                        System.out.println("No hay ningún pedido activo seleccionado.");
+                        break;
+                    }
+
+                    if (pedidoActual.getModalidadEntrega() != ModalidadEntrega.DOMICILIO) {
+                        System.out.println("El pedido actual es para consumo en el restaurante, no requiere domicilio.");
+                        break;
+                    }
+
+                    ServicioDomicilio servicioDomicilio = null;
+                    int opcionDomicilio = 0;
+                    while (opcionDomicilio < 1 || opcionDomicilio > 2) {
+                        System.out.println("Elige una empresa de transporte para el domicilio:\n1. Entrega Segura\n2. Rapido Express");
+                        opcionDomicilio = sc.nextInt();
+                        sc.nextLine();
+
+                        switch (opcionDomicilio) {
+                            case 1: {
+                                servicioDomicilio = entregaSegura;
+                                break;
+                            }
+                            case 2: {
+                                servicioDomicilio = rapidoExpress;
+                                break;
+                            }
+                            default: {
+                                System.out.println("La opcion no existe, intenta de nuevo:");
                             }
                         }
                     }
 
-                    Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, cliente, servicioDomicilio);
-                    pedido.setEstadoPedido(EstadoPedido.PENDIENTE);
+                    pedidoActual.setEmpresaTransporte(servicioDomicilio);
 
-                    pedidoActual = pedido;
-                    System.out.println("El pedido ha sido registrado correctamente.");
-
-                    break;
-                }
-                case 7: {
-
-                    if (pedidoActual == null) {
-                        System.out.println("No hay ningún pedido activo. Debe crear un pedido primero en el menú correspondiente.");
-                        break;
-                    }
-
-                    System.out.println("\n--- GESTIÓN DE DOMICILIO ---");
-                    System.out.print("Ingrese la distancia del recorrido en kilómetros (km): ");
+                    System.out.print("Ingrese la distancia en kilómetros para el envío: ");
                     double distancia = sc.nextDouble();
+                    sc.nextLine();
 
-                    ServicioDomicilio rapido = new RapidoExpress();
-                    ServicioDomicilio segura = new EntregaSegura();
-                    System.out.println("Cotizaciones disponibles para " + distancia + " km:");
-
-                    boolean rapidoAcepta = rapido.aceptarRecorrido(distancia);
-                    boolean seguraAcepta = segura.aceptarRecorrido(distancia);
-
-                    if (rapidoAcepta) {
-                        System.out.println("1. " + rapido.getNombreEmpresa() + " - Costo: $" + rapido.calcularCostoEnvio(distancia));
-                    } else {
-                        System.out.println("1. " + rapido.getNombreEmpresa() + " - NO disponible (supera el límite de 12 km)");
-                    }
-
-                    if (seguraAcepta) {
-                        System.out.println("2. " + segura.getNombreEmpresa() + " - Costo: $" + segura.calcularCostoEnvio(distancia));
-                    } else {
-                        System.out.println("2. " + segura.getNombreEmpresa() + " - NO disponible (supera el límite de 20 km)");
-                    }
-
-                    if (!rapidoAcepta && !seguraAcepta) {
-                        System.out.println("\n Error: Ninguna empresa de domicilio acepta recorridos para la distancia ingresada.");
+                    if (distancia < 0) {
+                        System.out.println("La distancia no puede ser negativa.");
                         break;
                     }
+                    pedidoActual.calcularCostoDomicilio(distancia);
 
-                    System.out.print("\nSeleccione la empresa de transporte (1 o 2): ");
-                    int eleccion = sc.nextInt();
+                    System.out.println("¡Domicilio asignado y calculado correctamente!");
+                    System.out.println("Transportadora: " + pedidoActual.getEmpresaTransporte().getNombreEmpresa());
+                    System.out.println("Costo de envío: $" + pedidoActual.getCostoDomicilio());
+                    System.out.println("Valor total actual del pedido: $" + pedidoActual.calcularValorTotal());
 
-                    if (eleccion == 1 && rapidoAcepta) {
-                        pedidoActual.setEmpresaTransporte(rapido);
-                        pedidoActual.setCostoDomicilio(rapido.calcularCostoEnvio(distancia));
-                        System.out.println("Se asignó " + rapido.getNombreEmpresa() + " al pedido.");
-                    } else if (eleccion == 2 && seguraAcepta) {
-                        pedidoActual.setEmpresaTransporte(segura);
-                        pedidoActual.setCostoDomicilio(segura.calcularCostoEnvio(distancia));
-                        System.out.println("Se asigno " + segura.getNombreEmpresa() + " al pedido.");
-                    } else {
-                        System.out.println("Selección inválida o la empresa seleccionada no acepta el servicio.");
-                    }
 
-                    break;
+                break;
+
                 }
+
 
                 case 8: {
                     //Confirmar pedidos, verificando que el cliente esté registrado, los productos
