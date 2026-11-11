@@ -150,16 +150,17 @@ public class Restaurante {
         return true;
     }
 
-    public Pedido buscarPedido(String codigo){
-        for(Pedido pedido : listaPedidos){
-            if(pedido.getCodigo().equals(codigo)){
-                return pedido;
+    public Pedido buscarPedido(String codigo) {
+        for (Cliente cliente : listaClientes) {
+            if (cliente != null) {
+                Pedido pedidoEncontrado = cliente.buscarPedido(codigo);
+                if (pedidoEncontrado != null) {
+                    return pedidoEncontrado;
+                }
             }
         }
-        System.out.println("Pedido no encontrado");
-        return null;
+        return null; // No apareció en ningún lado
     }
-
     public void consultarPedidosCliente(){
         for(Pedido pedido : listaPedidos){
             System.out.println(pedido.getCodigo() + ": " + pedido.getEstadoPedido());
