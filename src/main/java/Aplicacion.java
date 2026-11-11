@@ -270,19 +270,22 @@ public class Aplicacion {
                     DetallePedido detallePedido = new DetallePedido(producto, cantidadProductos);
 
                     String codigoPedido = "";
-                    boolean codigoPedidoValido = false;
+                    boolean codigoPedidoExiste = false;
                     do {
                         System.out.println("Ingresa el codigo del pedido (8 caracteres):");
                         codigoPedido = sc.nextLine();
+
                         if (codigoPedido.length() != 8){
                             System.out.println("El codigo debe de ser de 8 caracteres exactos");
-                            continue;
+                            codigoPedidoExiste = true;  continue;
                         }
-                        codigoPedidoValido = cliente.verificarPedido(codigoPedido);
-                        if(codigoPedidoValido){
+
+                        codigoPedidoExiste = cliente.verificarPedido(codigoPedido);
+
+                        if(codigoPedidoExiste){
                             System.out.println("El codigo que ingresaste ya existe, ingresa un codigo diferente");
                         }
-                    } while(codigoPedidoValido);
+                    } while(codigoPedidoExiste);
 
                     ModalidadEntrega modalidadEntrega = null;
                     int opcionEntrega = 0;
@@ -330,11 +333,8 @@ public class Aplicacion {
                         }
                     }
 
-
                     Pedido pedido = new Pedido(codigoPedido, LocalDateTime.now(), modalidadEntrega, cliente, servicioDomicilio);
                     pedido.setEstadoPedido(EstadoPedido.PENDIENTE);
-
-
 
                     pedidoActual = pedido;
                     System.out.println("El pedido ha sido registrado correctamente.");
