@@ -320,18 +320,20 @@ public class Aplicacion {
                         System.out.println("Ingresa el codigo del producto que deseas agregar:");
                         String codigoProd = sc.nextLine();
 
-                        Producto productos = restaurante.buscarProducto(codigoProd);
-                        if (productos == null){
+
+                        producto = restaurante.buscarProducto(codigoProd);
+
+                        if (producto == null){
                             System.out.println("Producto no encontrado en el menú.");
                         } else {
                             System.out.println("¿Cuántos " + producto.getNombre() + " deseas?");
                             int cantidadProducto = sc.nextInt();
-                            sc.nextLine();
+                            sc.nextLine(); // Limpiar búfer
 
                             if (cantidadProducto < 1) {
                                 System.out.println("La cantidad debe ser como minimo 1.");
                             } else {
-                                pedido.agregarProducto(producto, cantidadProductos);
+                                pedido.agregarProducto(producto, cantidadProducto);
                                 System.out.println("Producto agregado exitosamente.");
                             }
                         }
@@ -346,6 +348,11 @@ public class Aplicacion {
                     }
 
                     cliente.registrarPedido(pedido);
+
+                    if (restaurante.getListaPedidos() != null) {
+                        restaurante.getListaPedidos().add(pedido);
+                    }
+
                     pedidoActual = pedido;
 
                     System.out.println("\n¡Pedido registrado con éxito! (Si es domicilio, recuerda pasar al Case 7 para asignar transportadora y calcular costo).");
